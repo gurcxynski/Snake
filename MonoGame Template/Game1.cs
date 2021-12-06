@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Snake.Core;
+using Snake.GameObjects;
+using System.Collections.Generic;
+
 namespace Snake
 
 {
@@ -13,6 +16,9 @@ namespace Snake
         SpriteBatch spriteBatch;
         Scene GameScene = new Scene();
         Texture2D grass;
+        GameObject head;
+        GameObject apple_obj;
+        Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -46,8 +52,18 @@ namespace Snake
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-
+            
             grass = Content.Load<Texture2D>("grass");
+            textures["head_down"] = Content.Load<Texture2D>("head_down");
+            textures["head_up"] = Content.Load<Texture2D>("head_up");
+            textures["head_left"] = Content.Load<Texture2D>("head_left");
+            textures["head_right"] = Content.Load<Texture2D>("head_right");
+            textures["apple_texture"] = Content.Load<Texture2D>("apple");
+
+            head = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(430, 430)));
+            apple_obj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(610, 430)));
+
+
         }
 
         /// UnloadContent will be called once per game and is the place to unload
@@ -68,6 +84,8 @@ namespace Snake
                 Exit();
 
             // TODO: Add your update logic here
+
+            GameScene.Update(Keyboard.GetState(), head, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }

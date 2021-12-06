@@ -8,11 +8,11 @@ namespace Snake.Components
 {
     class PositionComponent : Component
     {
-        public Vector2 _Position { get; set; } = new Vector2();
+        public Vector2 Position { get; set; } = new Vector2();
 
         public PositionComponent(Vector2 position)
         {
-            _Position = position;
+            Position = position;
         }
     }
 }

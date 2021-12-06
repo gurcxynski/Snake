@@ -28,7 +28,7 @@ namespace Snake.Core
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, GetComponent<PositionComponent>()._Position, Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, GetComponent<PositionComponent>().Position, Microsoft.Xna.Framework.Color.White);
         }
     }
 }
