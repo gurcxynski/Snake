@@ -35,8 +35,8 @@ namespace Snake
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 900;
-            graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 800;
 
             graphics.ApplyChanges();
 
@@ -60,8 +60,8 @@ namespace Snake
             textures["head_right"] = Content.Load<Texture2D>("head_right");
             textures["apple_texture"] = Content.Load<Texture2D>("apple");
 
-            head = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(430, 430)));
-            apple_obj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(610, 430)));
+            head = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(400, 400)));
+            apple_obj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(480, 400)));
 
 
         }

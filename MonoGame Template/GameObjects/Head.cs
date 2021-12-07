@@ -15,7 +15,7 @@ namespace Snake.GameObjects
             AddComponent(new TextureComponent(texture));
             AddComponent(new PositionComponent(Position));
             AddComponent(new DirectionComponent());
-            AddComponent(new VelocityComponent(new Vector2(240,0)));
+            AddComponent(new VelocityComponent());
         }
     }
 }

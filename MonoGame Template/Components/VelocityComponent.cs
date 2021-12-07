@@ -16,6 +16,11 @@ namespace Snake.Components
             Velocity = arg;
         }
 
+        public VelocityComponent()
+        {
+            Velocity = new Vector2(0,0);
+        }
+
         public void Update()
         {
             
