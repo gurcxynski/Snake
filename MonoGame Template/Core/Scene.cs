@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.EasyInput;
 using Snake.Components;
 using System;
 using System.Collections.Generic;
@@ -11,17 +12,16 @@ namespace Snake.Core
 {
     class Scene
     {
+        const int SNAKE_VEL = 200;
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
-        char turn = 'n';
-        Vector2 last_vel = new Vector2();
+        Vector2 PrevVelocity = new Vector2();
+        EasyKeyboard keyboard = new EasyKeyboard();
+        Keys Turn = Keys.None;
+
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
             return go;
-        }
-        public void RemoveGameObject(GameObject go)
-        {
-
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -30,87 +30,76 @@ namespace Snake.Core
                 item.Draw(spriteBatch);
             }
         }
-        public void Update(KeyboardState kstate, GameObject go, Dictionary<string, Texture2D> textures, float UpdateTime)
-        {
-            if (kstate.IsKeyDown(Keys.Space))
-            {
-                if (go.GetComponent<VelocityComponent>().Velocity != new Vector2(0, 0))
-                {
-                    last_vel = go.GetComponent<VelocityComponent>().Velocity;
-                    go.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
-                }
-                else go.GetComponent<VelocityComponent>().Velocity = last_vel;
-            }
-            if (kstate.GetPressedKeyCount() == 1)
-            {
-                if (kstate.IsKeyDown(Keys.Left) && go.GetComponent<DirectionComponent>().Direction != DirectionType.Right)
-                {
-                    turn = 'l';
-                }
-                else if (kstate.IsKeyDown(Keys.Right) && go.GetComponent<DirectionComponent>().Direction != DirectionType.Left)
-                {
-                    turn = 'r';
-                }
-                else if (kstate.IsKeyDown(Keys.Up) && go.GetComponent<DirectionComponent>().Direction != DirectionType.Down)
-                {
-                    turn = 'u';
-                }
-                else if (kstate.IsKeyDown(Keys.Down) && go.GetComponent<DirectionComponent>().Direction != DirectionType.Up)
-                {
-                    turn = 'd';
-                }
-            }
-            if(turn != 'n' &&
-                go.GetComponent<PositionComponent>().Position.X % 40 < 10 && go.GetComponent<PositionComponent>().Position.Y % 40 < 10)
-            {
-                switch (turn)
-                {
-                    case 'l':
-                        go.GetComponent<DirectionComponent>().Direction = DirectionComponent.DirectionType.Left;
-                        go.GetComponent<VelocityComponent>().Velocity = new Microsoft.Xna.Framework.Vector2(-200, 0);
-                        go.GetComponent<PositionComponent>().Position =
-                            new Vector2(
-                            (go.GetComponent<PositionComponent>().Position.X / 40) * 40,
-                            (go.GetComponent<PositionComponent>().Position.Y / 40) * 40);
-                        turn = 'n'; break;
-                    case 'r':
-                        go.GetComponent<DirectionComponent>().Direction = DirectionComponent.DirectionType.Right;
-                        go.GetComponent<VelocityComponent>().Velocity = new Microsoft.Xna.Framework.Vector2(200, 0);
-                        go.GetComponent<PositionComponent>().Position =
-                            new Vector2(
-                            (go.GetComponent<PositionComponent>().Position.X / 40) * 40,
-                            (go.GetComponent<PositionComponent>().Position.Y / 40) * 40);
-                        turn = 'n'; break;
-                    case 'u':
-                        go.GetComponent<DirectionComponent>().Direction = DirectionComponent.DirectionType.Up;
-                        go.GetComponent<VelocityComponent>().Velocity = new Microsoft.Xna.Framework.Vector2(0, -200);
-                        go.GetComponent<PositionComponent>().Position =
-                            new Vector2(
-                            (go.GetComponent<PositionComponent>().Position.X / 40) * 40,
-                            (go.GetComponent<PositionComponent>().Position.Y / 40) * 40);
-                        turn = 'n'; break;
-                    case 'd':
-                        go.GetComponent<DirectionComponent>().Direction = DirectionComponent.DirectionType.Down;
-                        go.GetComponent<VelocityComponent>().Velocity = new Microsoft.Xna.Framework.Vector2(0, 200);
-                        go.GetComponent<PositionComponent>().Position =
-                            new Vector2(
-                            (go.GetComponent<PositionComponent>().Position.X / 40) * 40,
-                            (go.GetComponent<PositionComponent>().Position.Y / 40) * 40);
-                        turn = 'n'; break;
 
-                }
-            }
-            
-            switch (go.GetComponent<DirectionComponent>().Direction)
+        public void Update(GameObject SnakeHead, Dictionary<string, Texture2D> textures, float UpdateTime)
+        {
+            keyboard.Update();
+
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().Position.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().Position.Y);
+            System.Diagnostics.Debug.WriteLine(sb.ToString());
+
+
+            if (keyboard.ReleasedThisFrame(Keys.Space))
             {
-                case DirectionComponent.DirectionType.Left: go.GetComponent<TextureComponent>()._Texture = textures["head_left"]; break;
-                case DirectionComponent.DirectionType.Right: go.GetComponent<TextureComponent>()._Texture = textures["head_right"]; break;
-                case DirectionComponent.DirectionType.Up: go.GetComponent<TextureComponent>()._Texture = textures["head_up"]; break;
-                case DirectionComponent.DirectionType.Down: go.GetComponent<TextureComponent>()._Texture = textures["head_down"]; break;
+                if (SnakeHead.GetComponent<VelocityComponent>().Velocity != new Vector2(0, 0))
+                {
+                    PrevVelocity = SnakeHead.GetComponent<VelocityComponent>().Velocity;
+                    SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
+                }
+                else SnakeHead.GetComponent<VelocityComponent>().Velocity = PrevVelocity;
             }
-            go.GetComponent<PositionComponent>().Position = new Vector2(
-                go.GetComponent<PositionComponent>().Position.X + go.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
-                go.GetComponent<PositionComponent>().Position.Y + go.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
+
+            if (keyboard.ReleasedThisFrame(Keys.Left) && SnakeHead.GetComponent<DirectionComponent>().Direction != DirectionType.Right)
+            {
+                SnakeHead.GetComponent<DirectionComponent>().Direction = DirectionType.Left;
+            }
+            if (keyboard.ReleasedThisFrame(Keys.Right) && SnakeHead.GetComponent<DirectionComponent>().Direction != DirectionType.Left)
+            {
+                SnakeHead.GetComponent<DirectionComponent>().Direction = DirectionType.Right;
+            }
+            if (keyboard.ReleasedThisFrame(Keys.Up) && SnakeHead.GetComponent<DirectionComponent>().Direction != DirectionType.Down)
+            {
+                SnakeHead.GetComponent<DirectionComponent>().Direction = DirectionType.Up;
+            }
+            if (keyboard.ReleasedThisFrame(Keys.Down) && SnakeHead.GetComponent<DirectionComponent>().Direction != DirectionType.Up)
+            {
+                SnakeHead.GetComponent<DirectionComponent>().Direction = DirectionType.Down;
+            }
+
+
+            
+            switch (SnakeHead.GetComponent<DirectionComponent>().Direction)
+            {
+                case DirectionComponent.DirectionType.Left:
+                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_left"];
+                    Turn = Keys.Left;
+                    break;
+                case DirectionComponent.DirectionType.Right: 
+                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_right"];
+                    Turn = Keys.Right;
+                    break;
+                case DirectionComponent.DirectionType.Up: 
+                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_up"];
+                    Turn = Keys.Up;
+                    break;
+                case DirectionComponent.DirectionType.Down: 
+                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_down"];
+                    Turn = Keys.Down;
+                    break;
+            }
+
+
+            //if(SnakeHead.GetComponent<PositionComponent>().Position.X)
+            //add grid check
+
+
+            SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(
+                SnakeHead.GetComponent<PositionComponent>().Position.X + SnakeHead.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
+                SnakeHead.GetComponent<PositionComponent>().Position.Y + SnakeHead.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
+
         }
+        
     }
 }

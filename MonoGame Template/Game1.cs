@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Snake.Core;
 using Snake.GameObjects;
 using System.Collections.Generic;
+using MonoGame.EasyInput;
 
 namespace Snake
 
@@ -17,8 +18,8 @@ namespace Snake
         Scene GameScene = new Scene();
         Texture2D grass;
         GameObject head;
-        GameObject apple_obj;
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -61,7 +62,6 @@ namespace Snake
             textures["apple_texture"] = Content.Load<Texture2D>("apple");
 
             head = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(400, 400)));
-            apple_obj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(480, 400)));
 
 
         }
@@ -85,7 +85,7 @@ namespace Snake
 
             // TODO: Add your update logic here
 
-            GameScene.Update(Keyboard.GetState(), head, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            GameScene.Update(head, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
