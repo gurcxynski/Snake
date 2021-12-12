@@ -18,6 +18,8 @@ namespace Snake
         Texture2D grass;
         GameObject headObj, appleObj;
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        int Score = 0;
+        SpriteFont font;
 
         public Game1()
         {
@@ -59,6 +61,7 @@ namespace Snake
             textures["head_left"] = Content.Load<Texture2D>("head_left");
             textures["head_right"] = Content.Load<Texture2D>("head_right");
             textures["apple_texture"] = Content.Load<Texture2D>("apple");
+            font = Content.Load<SpriteFont>("Score");
 
             headObj = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight / 2)));
             appleObj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(graphics.PreferredBackBufferWidth / 2 + 80, graphics.PreferredBackBufferHeight / 2)));
@@ -84,7 +87,7 @@ namespace Snake
 
             // TODO: Add your update logic here
 
-            GameScene.Update(graphics, headObj, appleObj, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            Score = GameScene.Update(graphics, headObj, appleObj, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
@@ -101,7 +104,10 @@ namespace Snake
             spriteBatch.Begin();
 
             spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
+
             GameScene.Draw(spriteBatch);
+
+            spriteBatch.DrawString(font, Score.ToString(), new Vector2(0, 0), Color.Black);
 
             spriteBatch.End();
 

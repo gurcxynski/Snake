@@ -18,7 +18,8 @@ namespace Snake.Core
         EasyKeyboard keyboard = new EasyKeyboard();
         Keys Turn = Keys.None;
         bool IsPaused = true;
-        Random random = new Random();   
+        Random random = new Random();
+        int Score = 0;
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
@@ -32,14 +33,14 @@ namespace Snake.Core
             }
         }
 
-        public void Update(GraphicsDeviceManager graphics, GameObject SnakeHead, GameObject Apple, Dictionary<string, Texture2D> textures, float UpdateTime)
+        public int Update(GraphicsDeviceManager graphics, GameObject SnakeHead, GameObject Apple, Dictionary<string, Texture2D> textures, float UpdateTime)
         {
             keyboard.Update();
 
 
             StringBuilder sb = new StringBuilder();
             sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().Position.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().Position.Y).
-                Append(" ").Append(IsPaused);
+                Append(" ").Append(IsPaused).Append(" Score: ").Append(Score);
             System.Diagnostics.Debug.WriteLine(sb.ToString());
 
 
@@ -83,23 +84,15 @@ namespace Snake.Core
             switch (SnakeHead.GetComponent<DirectionComponent>().Direction)
             {
                 case DirectionComponent.DirectionType.Left:
-                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_left"];
                     Turn = Keys.Left;
-                    SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(-SNAKE_VEL, 0);
                     break;
                 case DirectionComponent.DirectionType.Right: 
-                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_right"];
-                    SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(SNAKE_VEL, 0);
                     Turn = Keys.Right;
                     break;
                 case DirectionComponent.DirectionType.Up: 
-                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_up"];
-                    SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, -SNAKE_VEL);
                     Turn = Keys.Up;
                     break;
                 case DirectionComponent.DirectionType.Down: 
-                    SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_down"];
-                    SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, SNAKE_VEL);
                     Turn = Keys.Down;
                     break;
             }
@@ -107,12 +100,13 @@ namespace Snake.Core
             if(IsPaused) SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
 
 
-            if (SnakeHead.GetComponent<PositionComponent>().Position.X == Apple.GetComponent<PositionComponent>().Position.X 
-                && SnakeHead.GetComponent<PositionComponent>().Position.Y == Apple.GetComponent<PositionComponent>().Position.Y)
+            if (Math.Abs(SnakeHead.GetComponent<PositionComponent>().Position.X - Apple.GetComponent<PositionComponent>().Position.X) < 1 &&
+                Math.Abs(SnakeHead.GetComponent<PositionComponent>().Position.Y - Apple.GetComponent<PositionComponent>().Position.Y) < 1)
             {
                 Apple.GetComponent<PositionComponent>().Position = new Vector2(
-                    random.Next(0, graphics.PreferredBackBufferWidth),
-                    random.Next(0, graphics.PreferredBackBufferHeight));
+                    40 * random.Next(0, graphics.PreferredBackBufferWidth/40),
+                    40 * random.Next(0, graphics.PreferredBackBufferHeight/40));
+                Score++;
             }
                 
             
@@ -121,18 +115,54 @@ namespace Snake.Core
                 switch (Turn){
                     case Keys.Up:
                         {
+                            if (SnakeHead.GetComponent<PositionComponent>().Position.X % 40 < 10)
+                            {
+                                SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, -SNAKE_VEL);
+                                Turn = Keys.None;
+                                SnakeHead.GetComponent<PositionComponent>().Position =
+                                    new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X - SnakeHead.GetComponent<PositionComponent>().Position.X % 40,
+                                    SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                                SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_up"];
+                            }
                             break;
                         }
                     case Keys.Down:
                         {
+                            if (SnakeHead.GetComponent<PositionComponent>().Position.X % 40 < 10)
+                            {
+                                SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, SNAKE_VEL);
+                                Turn = Keys.None;
+                                SnakeHead.GetComponent<PositionComponent>().Position = 
+                                    new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X - SnakeHead.GetComponent<PositionComponent>().Position.X % 40,
+                                    SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                                SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_down"];
+                            }
                             break;
                         }
                     case Keys.Left:
                         {
+                            if (SnakeHead.GetComponent<PositionComponent>().Position.Y % 40 < 10)
+                            {
+                                SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(-SNAKE_VEL, 0);
+                                Turn = Keys.None;
+                                SnakeHead.GetComponent<PositionComponent>().Position = 
+                                    new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X,
+                                    SnakeHead.GetComponent<PositionComponent>().Position.Y - SnakeHead.GetComponent<PositionComponent>().Position.Y % 40);
+                                SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_left"];
+                            }
                             break;
                         }
                     case Keys.Right:
                         {
+                            if (SnakeHead.GetComponent<PositionComponent>().Position.Y % 40 < 10)
+                            {
+                                SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(SNAKE_VEL, 0);
+                                Turn = Keys.None;
+                                SnakeHead.GetComponent<PositionComponent>().Position = 
+                                    new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X,
+                                    SnakeHead.GetComponent<PositionComponent>().Position.Y - SnakeHead.GetComponent<PositionComponent>().Position.Y % 40);
+                                SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_right"];
+                            }
                             break;
                         }
                 }
@@ -143,17 +173,17 @@ namespace Snake.Core
 
             if(SnakeHead.GetComponent<PositionComponent>().Position.X < 0)
             {
-                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(graphics.PreferredBackBufferWidth, SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(graphics.PreferredBackBufferWidth - 1, SnakeHead.GetComponent<PositionComponent>().Position.Y);
             }
-            if (SnakeHead.GetComponent<PositionComponent>().Position.X > graphics.PreferredBackBufferWidth)
+            if (SnakeHead.GetComponent<PositionComponent>().Position.X >= graphics.PreferredBackBufferWidth)
             {
                 SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(0, SnakeHead.GetComponent<PositionComponent>().Position.Y);
             }
             if (SnakeHead.GetComponent<PositionComponent>().Position.Y < 0)
             {
-                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, graphics.PreferredBackBufferHeight);
+                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, graphics.PreferredBackBufferHeight - 1);
             }
-            if (SnakeHead.GetComponent<PositionComponent>().Position.Y > graphics.PreferredBackBufferHeight)
+            if (SnakeHead.GetComponent<PositionComponent>().Position.Y >= graphics.PreferredBackBufferHeight)
             {
                 SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, 0);
             }
@@ -163,7 +193,7 @@ namespace Snake.Core
                 SnakeHead.GetComponent<PositionComponent>().Position.X + SnakeHead.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
                 SnakeHead.GetComponent<PositionComponent>().Position.Y + SnakeHead.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
 
+            return Score;
         }
-        
     }
 }
