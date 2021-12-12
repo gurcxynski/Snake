@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using Snake.Core;
 using Snake.GameObjects;
 using System.Collections.Generic;
-using MonoGame.EasyInput;
 
 namespace Snake
 
@@ -17,7 +16,7 @@ namespace Snake
         SpriteBatch spriteBatch;
         Scene GameScene = new Scene();
         Texture2D grass;
-        GameObject head;
+        GameObject headObj, appleObj;
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
 
         public Game1()
@@ -36,8 +35,8 @@ namespace Snake
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 800;
+            graphics.PreferredBackBufferWidth = 400;
+            graphics.PreferredBackBufferHeight = 400;
 
             graphics.ApplyChanges();
 
@@ -61,8 +60,8 @@ namespace Snake
             textures["head_right"] = Content.Load<Texture2D>("head_right");
             textures["apple_texture"] = Content.Load<Texture2D>("apple");
 
-            head = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(400, 400)));
-
+            headObj = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight / 2)));
+            appleObj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(graphics.PreferredBackBufferWidth / 2 + 80, graphics.PreferredBackBufferHeight / 2)));
 
         }
 
@@ -85,7 +84,7 @@ namespace Snake
 
             // TODO: Add your update logic here
 
-            GameScene.Update(head, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            GameScene.Update(graphics, headObj, appleObj, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
