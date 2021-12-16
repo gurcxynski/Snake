@@ -16,10 +16,9 @@ namespace Snake
         SpriteBatch spriteBatch;
         Scene GameScene = new Scene();
         Texture2D grass;
-        GameObject headObj, appleObj;
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
-        int Score = 0;
         SpriteFont font;
+        bool GameOver = false;
 
         public Game1()
         {
@@ -63,9 +62,8 @@ namespace Snake
             textures["apple_texture"] = Content.Load<Texture2D>("apple");
             font = Content.Load<SpriteFont>("Score");
 
-            headObj = GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight / 2)));
-            appleObj = GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(graphics.PreferredBackBufferWidth / 2 + 80, graphics.PreferredBackBufferHeight / 2)));
-
+            GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight / 2)));
+            GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(graphics.PreferredBackBufferWidth / 2 + 80, graphics.PreferredBackBufferHeight / 2)));
         }
 
         /// UnloadContent will be called once per game and is the place to unload
@@ -82,13 +80,8 @@ namespace Snake
         
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            // TODO: Add your update logic here
-
-            Score = GameScene.Update(graphics, headObj, appleObj, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
-
+            GameOver = !GameScene.Update(graphics, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            
             base.Update(gameTime);
         }
 
@@ -97,17 +90,22 @@ namespace Snake
         
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(255,183,197));
-
-            // TODO: Add your drawing code here
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
+            if (!GameOver)
+            {
+                GraphicsDevice.Clear(new Color(255, 183, 197));
 
-            GameScene.Draw(spriteBatch);
+                spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
 
-            spriteBatch.DrawString(font, Score.ToString(), new Vector2(0, 0), Color.Black);
+                GameScene.Draw(spriteBatch, font);
+                
+            }
+            else
+            {
+                spriteBatch.DrawString(font, "GAME OVER", new Vector2(150, 180), Color.Black);
+            }
 
             spriteBatch.End();
 

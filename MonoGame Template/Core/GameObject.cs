@@ -27,6 +27,15 @@ namespace Snake.Core
             }
             return null;
         }
+
+        public void Update(float UpdateTime)
+        {
+            foreach (var component in _components)
+            {
+                component.Update(UpdateTime);
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, GetComponent<PositionComponent>().Position, Microsoft.Xna.Framework.Color.White);

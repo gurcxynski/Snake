@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using static Snake.Components.DirectionComponent;
 using System;
+using Snake.GameObjects;
 
 namespace Snake.Core
 {
@@ -18,31 +19,41 @@ namespace Snake.Core
         EasyKeyboard keyboard = new EasyKeyboard();
         Keys Turn = Keys.None;
         bool IsPaused = true;
-        Random random = new Random();
         int Score = 0;
+        bool GameNotOver = true;
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
             return go;
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             foreach (var item in _gameObjects)
             {
                 item.Draw(spriteBatch);
             }
+            spriteBatch.DrawString(font, Score.ToString(), new Vector2(0, 0), Color.Black);
         }
 
-        public int Update(GraphicsDeviceManager graphics, GameObject SnakeHead, GameObject Apple, Dictionary<string, Texture2D> textures, float UpdateTime)
+        public T GetObject<T>() where T : GameObject
         {
+            foreach (var Object in _gameObjects)
+            {
+                if (Object.GetType() == typeof(T))
+                {
+                    return Object as T;
+                }
+            }
+            return null;
+        }
+
+
+        public bool Update(GraphicsDeviceManager graphics, Dictionary<string, Texture2D> textures, float UpdateTime)
+        {
+            GameObject SnakeHead = GetObject<Head>();
+            GameObject Apple = GetObject<Apple>();
+
             keyboard.Update();
-
-
-            StringBuilder sb = new StringBuilder();
-            sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().Position.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().Position.Y).
-                Append(" ").Append(IsPaused).Append(" Score: ").Append(Score);
-            System.Diagnostics.Debug.WriteLine(sb.ToString());
-
 
             if (keyboard.ReleasedThisFrame(Keys.Space))
             {
@@ -99,17 +110,6 @@ namespace Snake.Core
 
             if(IsPaused) SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
 
-
-            if (Math.Abs(SnakeHead.GetComponent<PositionComponent>().Position.X - Apple.GetComponent<PositionComponent>().Position.X) < 1 &&
-                Math.Abs(SnakeHead.GetComponent<PositionComponent>().Position.Y - Apple.GetComponent<PositionComponent>().Position.Y) < 1)
-            {
-                Apple.GetComponent<PositionComponent>().Position = new Vector2(
-                    40 * random.Next(0, graphics.PreferredBackBufferWidth/40),
-                    40 * random.Next(0, graphics.PreferredBackBufferHeight/40));
-                Score++;
-            }
-                
-            
             if(Turn != Keys.None && !IsPaused)
             {
                 switch (Turn){
@@ -173,27 +173,41 @@ namespace Snake.Core
 
             if(SnakeHead.GetComponent<PositionComponent>().Position.X < 0)
             {
-                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(graphics.PreferredBackBufferWidth - 1, SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                //SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(graphics.PreferredBackBufferWidth - 1, SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                GameNotOver = false;
             }
-            if (SnakeHead.GetComponent<PositionComponent>().Position.X >= graphics.PreferredBackBufferWidth)
+            if (SnakeHead.GetComponent<PositionComponent>().Position.X >= graphics.PreferredBackBufferWidth - 40)
             {
-                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(0, SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                //SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(0, SnakeHead.GetComponent<PositionComponent>().Position.Y);
+                GameNotOver = false;
             }
             if (SnakeHead.GetComponent<PositionComponent>().Position.Y < 0)
             {
-                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, graphics.PreferredBackBufferHeight - 1);
+                //SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, graphics.PreferredBackBufferHeight - 1);
+                GameNotOver = false;
             }
-            if (SnakeHead.GetComponent<PositionComponent>().Position.Y >= graphics.PreferredBackBufferHeight)
+            if (SnakeHead.GetComponent<PositionComponent>().Position.Y >= graphics.PreferredBackBufferHeight - 40)
             {
-                SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, 0);
+                //SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X, 0);
+                GameNotOver = false;
             }
 
+            SnakeHead.GetComponent<VelocityComponent>().Update(UpdateTime, SnakeHead);
+            SnakeHead.GetComponent<PositionComponent>().Update(UpdateTime, SnakeHead.GetComponent<DirectionComponent>().Direction);
+            if (Apple.GetComponent<CollisionChecker>().Check((Head)SnakeHead))
+            {
+                Apple.GetComponent<PositionComponent>().Randomize();
+                Score++;
+            }
 
-            SnakeHead.GetComponent<PositionComponent>().Position = new Vector2(
-                SnakeHead.GetComponent<PositionComponent>().Position.X + SnakeHead.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
-                SnakeHead.GetComponent<PositionComponent>().Position.Y + SnakeHead.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
+            StringBuilder sb = new StringBuilder();
+            sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y);
+            sb.Append("   Apple: X: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.Y);
+            
+            System.Diagnostics.Debug.WriteLine(sb.ToString());
 
-            return Score;
+
+            return GameNotOver;
         }
     }
 }

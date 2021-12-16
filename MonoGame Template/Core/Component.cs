@@ -6,5 +6,9 @@ namespace Snake.Core
 {
     internal class Component
     {
+        public void Update(float UpdateTime)
+        {
+
+        }
     }
 }
