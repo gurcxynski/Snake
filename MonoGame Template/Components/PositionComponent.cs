@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Snake.Core;
 using System;
 using System.Collections.Generic;
@@ -22,17 +23,17 @@ namespace Snake.Components
             if (newPosY == 10) newPosY = 0;*/
             RoundedPosition = new Vector2(newPosX, newPosY); 
         }
-        public void Update(float UpdateTime, DirectionComponent.DirectionType direction)
+        public void Update(float UpdateTime, Keys direction)
         {
             int newPosX = (int)Position.X / 40;
             int newPosY = (int)Position.Y / 40;
             
                 switch (direction)
                 {
-                case DirectionType.Right:
+                case Keys.Right:
                      newPosX++;
                      break;
-                case DirectionType.Down:
+                case Keys.Down:
                      newPosY++;
                      break;
                 }

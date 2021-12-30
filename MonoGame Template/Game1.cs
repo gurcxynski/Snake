@@ -60,6 +60,8 @@ namespace Snake
             textures["head_left"] = Content.Load<Texture2D>("head_left");
             textures["head_right"] = Content.Load<Texture2D>("head_right");
             textures["apple_texture"] = Content.Load<Texture2D>("apple");
+            textures["body_hor"] = Content.Load<Texture2D>("body_horizontal");
+            textures["body_ver"] = Content.Load<Texture2D>("body_vertical");
             font = Content.Load<SpriteFont>("Score");
 
             GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight / 2)));
