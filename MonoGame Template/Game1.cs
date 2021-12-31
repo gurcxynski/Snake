@@ -18,7 +18,7 @@ namespace Snake
         Texture2D grass;
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         SpriteFont font;
-        bool GameOver = false;
+        bool GameRunning = true;
 
         public Game1()
         {
@@ -82,33 +82,27 @@ namespace Snake
         
         protected override void Update(GameTime gameTime)
         {
-            GameOver = !GameScene.Update(graphics, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            if(GameRunning) GameRunning = GameScene.Update(graphics, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
             
             base.Update(gameTime);
         }
 
         /// This is called when the game should draw itself.
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        
+
         protected override void Draw(GameTime gameTime)
         {
 
             spriteBatch.Begin();
 
-            if (!GameOver)
-            {
-                GraphicsDevice.Clear(new Color(255, 183, 197));
+            GraphicsDevice.Clear(new Color(255, 183, 197));
 
-                spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
 
-                GameScene.Draw(spriteBatch, font);
-                
-            }
-            else
-            {
-                spriteBatch.DrawString(font, "GAME OVER", new Vector2(150, 180), Color.Black);
-            }
+            GameScene.Draw(spriteBatch, font);
 
+            if(!GameRunning) spriteBatch.DrawString(font, "GAME OVER", new Vector2(150, 180), Color.Black);
+        
             spriteBatch.End();
 
             base.Draw(gameTime);

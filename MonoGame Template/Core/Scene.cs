@@ -19,7 +19,8 @@ namespace Snake.Core
         Keys Turn = Keys.Right;
         bool IsPaused = true;
         int Score = 0;
-        bool GameNotOver = true;
+        List<BodyFragment> fragments = new List<BodyFragment>();
+
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
@@ -154,10 +155,11 @@ namespace Snake.Core
             }
 
 
-            if(SnakeHead.GetComponent<PositionComponent>().Position.X < 0 || SnakeHead.GetComponent<PositionComponent>().Position.X >= graphics.PreferredBackBufferWidth - 40 || 
-               SnakeHead.GetComponent<PositionComponent>().Position.Y < 0 || SnakeHead.GetComponent<PositionComponent>().Position.Y >= graphics.PreferredBackBufferHeight - 40)
+            if(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X < 0 || SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X > 10 || 
+               SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y < 0 || SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y > 10)
             {
-                GameNotOver = false;
+                IsPaused = true;
+                return false;
             }
 
             SnakeHead.GetComponent<VelocityComponent>().Update(UpdateTime, SnakeHead);
@@ -167,10 +169,25 @@ namespace Snake.Core
             {
                 Apple.GetComponent<PositionComponent>().Randomize();
                 Score++;
-                AddGameObject(new BodyFragment(textures, SnakeHead));
+                if(Score == 1)
+                {
+                    BodyFragment newFragment = new BodyFragment(textures, SnakeHead);
+                    fragments.Add(newFragment);
+                    AddGameObject(newFragment);
+                }
+                else
+                {
+                    BodyFragment newFragment = new BodyFragment(textures, fragments[Score - 2]);
+                    fragments.Add(newFragment);
+                    AddGameObject(newFragment);
+                }
+                
             }
 
-            if(GetObject<BodyFragment>() != null) GetObject<BodyFragment>().Update(UpdateTime);
+            foreach (var item in fragments)
+            {
+                item.GetComponent<VelocityComponent>().Update(UpdateTime, item);
+            }
 
             StringBuilder sb = new StringBuilder();
             sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y);
@@ -179,7 +196,7 @@ namespace Snake.Core
             
             System.Diagnostics.Debug.WriteLine(sb.ToString());
 
-            return GameNotOver;
+            return true;
         }
     }
 }

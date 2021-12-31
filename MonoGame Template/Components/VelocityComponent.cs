@@ -21,11 +21,11 @@ namespace Snake.Components
             Velocity = new Vector2(0, 0);
         }
 
-        public new void Update(float UpdateTime, GameObject Snake)
+        public void Update(float UpdateTime, GameObject Object)
         {
-            Snake.GetComponent<PositionComponent>().Position = new Vector2(
-            Snake.GetComponent<PositionComponent>().Position.X + Snake.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
-            Snake.GetComponent<PositionComponent>().Position.Y + Snake.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
+            Object.GetComponent<PositionComponent>().Position = new Vector2(
+            Object.GetComponent<PositionComponent>().Position.X + Object.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
+            Object.GetComponent<PositionComponent>().Position.Y + Object.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
         }
     }
 }
