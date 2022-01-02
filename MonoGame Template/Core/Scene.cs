@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System;
 using Snake.GameObjects;
+using System.Diagnostics;
 
 namespace Snake.Core
 {
@@ -16,7 +17,7 @@ namespace Snake.Core
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
         Vector2 PrevVelocity = new Vector2(SNAKE_VEL, 0);
         EasyKeyboard keyboard = new EasyKeyboard();
-        Keys Turn = Keys.Right;
+        Keys Turn = Keys.None;
         bool IsPaused = true;
         int Score = 0;
         List<BodyFragment> fragments = new List<BodyFragment>();
@@ -53,6 +54,8 @@ namespace Snake.Core
             GameObject SnakeHead = GetObject<Head>();
             GameObject Apple = GetObject<Apple>();
 
+            StringBuilder sb = new StringBuilder();
+
             keyboard.Update();
 
             if (keyboard.ReleasedThisFrame(Keys.Space))
@@ -60,11 +63,19 @@ namespace Snake.Core
                 if (IsPaused)
                 {
                     SnakeHead.GetComponent<VelocityComponent>().Velocity = PrevVelocity;
+                    foreach (var item in fragments)
+                    {
+                        item.Unpause();
+                    }
                     IsPaused = false;
                 }
                 else
                 {
                     PrevVelocity = SnakeHead.GetComponent<VelocityComponent>().Velocity;
+                    foreach (var item in fragments)
+                    {
+                        item.Pause();
+                    }
                     IsPaused = true;
                 }
             }
@@ -78,84 +89,32 @@ namespace Snake.Core
                 if (keyboard.ReleasedThisFrame(Keys.Left) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Right)
                 {
                     Turn = Keys.Left;
+                    sb.Append(Turn.ToString());
                 }
                 if (keyboard.ReleasedThisFrame(Keys.Right) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Left)
                 {
                     Turn = Keys.Right;
+                    sb.Append(Turn.ToString());
                 }
                 if (keyboard.ReleasedThisFrame(Keys.Up) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Down)
                 {
                     Turn = Keys.Up;
+                    sb.Append(Turn.ToString());
                 }
                 if (keyboard.ReleasedThisFrame(Keys.Down) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Up)
                 {
                     Turn = Keys.Down;
+                    sb.Append(Turn.ToString());
                 }
             }
 
-
-            switch (Turn)
+            if (!IsPaused && Turn != Keys.None)
             {
-                case Keys.Up:
-                    {
-                        if (SnakeHead.GetComponent<PositionComponent>().Position.X % 40 < 10)
-                        {
-                            SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, -SNAKE_VEL);
-                            Turn = Keys.None;
-                            SnakeHead.GetComponent<PositionComponent>().Position =
-                                new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X - SnakeHead.GetComponent<PositionComponent>().Position.X % 40,
-                                SnakeHead.GetComponent<PositionComponent>().Position.Y);
-                            SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_up"];
-                            SnakeHead.GetComponent<DirectionComponent>().Direction = Keys.Up;
-                        }
-                        break;
-                    }
-                case Keys.Down:
-                    {
-                        if (SnakeHead.GetComponent<PositionComponent>().Position.X % 40 < 10)
-                        {
-                            SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, SNAKE_VEL);
-                            Turn = Keys.None;
-                            SnakeHead.GetComponent<PositionComponent>().Position =
-                                new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X - SnakeHead.GetComponent<PositionComponent>().Position.X % 40,
-                                SnakeHead.GetComponent<PositionComponent>().Position.Y);
-                            SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_down"];
-                            SnakeHead.GetComponent<DirectionComponent>().Direction = Keys.Down;
-                        }
-                        break;
-                    }
-                case Keys.Left:
-                    {
-                        if (SnakeHead.GetComponent<PositionComponent>().Position.Y % 40 < 10)
-                        {
-                            SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(-SNAKE_VEL, 0);
-                            Turn = Keys.None;
-                            SnakeHead.GetComponent<PositionComponent>().Position =
-                                new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X,
-                                SnakeHead.GetComponent<PositionComponent>().Position.Y - SnakeHead.GetComponent<PositionComponent>().Position.Y % 40);
-                            SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_left"];
-                            SnakeHead.GetComponent<DirectionComponent>().Direction = Keys.Left;
-                        }
-                        break;
-                    }
-                case Keys.Right:
-                    {
-                        if (SnakeHead.GetComponent<PositionComponent>().Position.Y % 40 < 10)
-                        {
-                            SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(SNAKE_VEL, 0);
-                            Turn = Keys.None;
-                            SnakeHead.GetComponent<PositionComponent>().Position =
-                                new Vector2(SnakeHead.GetComponent<PositionComponent>().Position.X,
-                                SnakeHead.GetComponent<PositionComponent>().Position.Y - SnakeHead.GetComponent<PositionComponent>().Position.Y % 40);
-                            SnakeHead.GetComponent<TextureComponent>()._Texture = textures["head_right"];
-                            SnakeHead.GetComponent<DirectionComponent>().Direction = Keys.Right;
-                        }
-                        break;
-                    }
+                SnakeHead.TurnObject(textures, Turn, SNAKE_VEL);
+                Turn = Keys.None;
             }
 
-
-            if(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X < 0 || SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X > 10 || 
+            if (SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X < 0 || SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X > 10 ||
                SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y < 0 || SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y > 10)
             {
                 IsPaused = true;
@@ -169,32 +128,35 @@ namespace Snake.Core
             {
                 Apple.GetComponent<PositionComponent>().Randomize();
                 Score++;
-                if(Score == 1)
+                if (Score == 1)
                 {
-                    BodyFragment newFragment = new BodyFragment(textures, SnakeHead);
+                    BodyFragment newFragment = new BodyFragment(textures, SnakeHead, Score - 1);
                     fragments.Add(newFragment);
                     AddGameObject(newFragment);
                 }
                 else
                 {
-                    BodyFragment newFragment = new BodyFragment(textures, fragments[Score - 2]);
+                    BodyFragment newFragment = new BodyFragment(textures, fragments[Score - 2], Score - 1);
                     fragments.Add(newFragment);
                     AddGameObject(newFragment);
                 }
-                
             }
+
 
             foreach (var item in fragments)
             {
                 item.GetComponent<VelocityComponent>().Update(UpdateTime, item);
+                if (!IsPaused) item.BodyUpdate(SNAKE_VEL, textures);
             }
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y);
-            sb.Append("   Apple: X: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.Y);
-            sb.Append("   Pause: ").Append(IsPaused);
             
-            System.Diagnostics.Debug.WriteLine(sb.ToString());
+            //sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y);
+            //sb.Append("   Apple: X: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.Y);
+            //sb.Append("   Pause: ").Append(IsPaused);
+            //if (fragments.Count > 0) sb.Append(fragments[0].GetComponent<DirectionComponent>().Direction);
+
+
+            Debug.WriteLine(sb.ToString());
 
             return true;
         }
