@@ -37,8 +37,6 @@ namespace Snake.Components
                      newPosY++;
                      break;
                 }
-            /*if (newPosX == 10) newPosX = 0;
-            if (newPosY == 10) newPosY = 0;*/
             RoundedPosition = new Vector2(newPosX, newPosY);
         }
         public void Randomize()

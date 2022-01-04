@@ -15,7 +15,8 @@ namespace Snake.GameObjects
         Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         int _index = 0;
         Vector2 prevVel = new Vector2(0, 0);
-        Keys turn = Keys.None;
+        public Keys turn = Keys.None;
+        public Vector2 prevRoundedPos = new Vector2(0, 0);
         public BodyFragment(Dictionary<string, Texture2D> textures, GameObject daddy, int index)
         {
             _daddy = daddy;
@@ -60,41 +61,67 @@ namespace Snake.GameObjects
         {
             GetComponent<VelocityComponent>().Velocity = prevVel;
         }
-        public void BodyUpdate(int SNAKE_VEL, Dictionary<string, Texture2D> textures)
+        public new bool TurnObject(Dictionary<string, Texture2D> textures, Keys Turn, int SNAKE_VEL)
         {
-            //GetComponent<DirectionComponent>().Direction = _daddy.GetComponent<DirectionComponent>().Direction;
-            if(_daddy.GetComponent<DirectionComponent>().Direction != GetComponent<DirectionComponent>().Direction)
+            switch (Turn)
             {
-                turn = _daddy.GetComponent<DirectionComponent>().Direction;
-                TurnObject(textures, turn, SNAKE_VEL);
-                turn = Keys.None;
-            }
-            switch (GetComponent<DirectionComponent>().Direction)
-            {
-                case Keys.Left:
-                    GetComponent<TextureComponent>()._Texture = _textures["body_hor"];
-                    GetComponent<PositionComponent>().Position= 
-                        new Vector2(_daddy.GetComponent<PositionComponent>().Position.X + 40, _daddy.GetComponent<PositionComponent>().Position.Y);
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(-200, 0);
-                    break;
-                case Keys.Right:
-                    GetComponent<TextureComponent>()._Texture = _textures["body_hor"];
-                    GetComponent<PositionComponent>().Position = 
-                        new Vector2(_daddy.GetComponent<PositionComponent>().Position.X - 40, _daddy.GetComponent<PositionComponent>().Position.Y);
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(200, 0);
-                    break;
                 case Keys.Up:
-                    GetComponent<TextureComponent>()._Texture = _textures["body_ver"];
-                    GetComponent<PositionComponent>().Position =
-                        new Vector2(_daddy.GetComponent<PositionComponent>().Position.X, _daddy.GetComponent<PositionComponent>().Position.Y + 40);
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, -200);
-                    break;
+                    {
+                        GetComponent<VelocityComponent>().Velocity = new Vector2(0, -SNAKE_VEL);
+                        GetComponent<PositionComponent>().Position =
+                            new Vector2(GetComponent<PositionComponent>().Position.X - GetComponent<PositionComponent>().Position.X % 40,
+                            GetComponent<PositionComponent>().Position.Y);
+                        GetComponent<DirectionComponent>().Direction = Keys.Up;
+                        Turned = Keys.Up;
+                        return true;
+                    }
                 case Keys.Down:
-                    GetComponent<TextureComponent>()._Texture = _textures["body_ver"];
-                    GetComponent<PositionComponent>().Position =
-                        new Vector2(_daddy.GetComponent<PositionComponent>().Position.X, _daddy.GetComponent<PositionComponent>().Position.Y - 40);
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, 200);
-                    break;
+                    {
+                        GetComponent<VelocityComponent>().Velocity = new Vector2(0, SNAKE_VEL);
+                        GetComponent<PositionComponent>().Position =
+                            new Vector2(GetComponent<PositionComponent>().Position.X - GetComponent<PositionComponent>().Position.X % 40,
+                            GetComponent<PositionComponent>().Position.Y);
+                        GetComponent<DirectionComponent>().Direction = Keys.Down;
+                        Turned = Keys.Down;
+                        return true;
+                    }
+                case Keys.Left:
+                    {
+                        GetComponent<VelocityComponent>().Velocity = new Vector2(-SNAKE_VEL, 0);
+                        GetComponent<PositionComponent>().Position =
+                            new Vector2(GetComponent<PositionComponent>().Position.X,
+                            GetComponent<PositionComponent>().Position.Y - GetComponent<PositionComponent>().Position.Y % 40);
+                        GetComponent<DirectionComponent>().Direction = Keys.Left;
+                        Turned = Keys.Left;
+                        return true;
+                    
+                    }
+                case Keys.Right:
+                    {
+                        GetComponent<VelocityComponent>().Velocity = new Vector2(SNAKE_VEL, 0);
+                        GetComponent<PositionComponent>().Position =
+                            new Vector2(GetComponent<PositionComponent>().Position.X,
+                            GetComponent<PositionComponent>().Position.Y - GetComponent<PositionComponent>().Position.Y % 40);
+                        GetComponent<DirectionComponent>().Direction = Keys.Right;
+                        Turned = Keys.Right;
+                        return true;
+                    }
+            }
+            return false;
+        }
+    public void BodyUpdate(int SNAKE_VEL, Dictionary<string, Texture2D> textures)
+        {
+            if(_daddy.Turned != Keys.None)
+            {
+                turn = _daddy.Turned;
+                prevRoundedPos = new Vector2(GetComponent<PositionComponent>().RoundedPosition.X - 1, GetComponent<PositionComponent>().RoundedPosition.Y - 1);
+            }
+            if (prevRoundedPos != new Vector2(0,0) && prevRoundedPos != GetComponent<PositionComponent>().RoundedPosition)
+            {
+                TurnObject(textures, turn, SNAKE_VEL);
+                Turned = turn;
+                turn = Keys.None;
+                _daddy.Turned = Keys.None; 
             }
         }
     }

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.EasyInput;
 using Snake.Components;
 namespace Snake.Core
 {
     class GameObject
     {
         private readonly List<Component> _components = new List<Component>();
+        Vector2 LastVelocity;
+
 
         public GameObject AddComponent(Component comp)
         {
@@ -29,79 +31,49 @@ namespace Snake.Core
             return null;
         }
 
-        public void Update(float UpdateTime)
+        public void Update(EasyKeyboard keyboard, Dictionary<string, Texture2D> textures, float UpdateTime)
         {
             foreach (var component in _components)
             {
-                component.Update(UpdateTime);
+                component.Update(keyboard, textures, UpdateTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, GetComponent<PositionComponent>().Position, Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, GetComponent<PositionComponent>().Position, Color.White);
         }
 
-        public void TurnObject(Dictionary<string, Texture2D> textures, Keys Turn, int SNAKE_VEL)
+        public void Pause()
         {
+            LastVelocity = GetComponent<VelocityComponent>().Velocity;
+            GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
+        }
+
+        public void UnPause()
+        {
+            GetComponent<VelocityComponent>().Velocity = LastVelocity;
+        }
+
+
+        public void TurnObject(Keys Turn)
+        {
+            int abs_velocity = (int)GetComponent<VelocityComponent>().Velocity.Length();
+            GetComponent<DirectionComponent>().Direction = Turn;
             switch (Turn)
             {
                 case Keys.Up:
-                    {
-                        if (this.GetComponent<PositionComponent>().Position.X % 40 < 10)
-                        {
-                            this.GetComponent<VelocityComponent>().Velocity = new Vector2(0, -SNAKE_VEL);
-                            Turn = Keys.None;
-                            this.GetComponent<PositionComponent>().Position =
-                                new Vector2(this.GetComponent<PositionComponent>().Position.X - this.GetComponent<PositionComponent>().Position.X % 40,
-                                this.GetComponent<PositionComponent>().Position.Y);
-                            this.GetComponent<TextureComponent>()._Texture = textures["head_up"];
-                            this.GetComponent<DirectionComponent>().Direction = Keys.Up;
-                        }
-                        break;
-                    }
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, -abs_velocity);
+                    break;
                 case Keys.Down:
-                    {
-                        if (this.GetComponent<PositionComponent>().Position.X % 40 < 10)
-                        {
-                            this.GetComponent<VelocityComponent>().Velocity = new Vector2(0, SNAKE_VEL);
-                            Turn = Keys.None;
-                            this.GetComponent<PositionComponent>().Position =
-                                new Vector2(this.GetComponent<PositionComponent>().Position.X - this.GetComponent<PositionComponent>().Position.X % 40,
-                                this.GetComponent<PositionComponent>().Position.Y);
-                            this.GetComponent<TextureComponent>()._Texture = textures["head_down"];
-                            this.GetComponent<DirectionComponent>().Direction = Keys.Down;
-                        }
-                        break;
-                    }
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, +abs_velocity);
+                    break;
                 case Keys.Left:
-                    {
-                        if (this.GetComponent<PositionComponent>().Position.Y % 40 < 10)
-                        {
-                            this.GetComponent<VelocityComponent>().Velocity = new Vector2(-SNAKE_VEL, 0);
-                            Turn = Keys.None;
-                            this.GetComponent<PositionComponent>().Position =
-                                new Vector2(this.GetComponent<PositionComponent>().Position.X,
-                                this.GetComponent<PositionComponent>().Position.Y - this.GetComponent<PositionComponent>().Position.Y % 40);
-                            this.GetComponent<TextureComponent>()._Texture = textures["head_left"];
-                            this.GetComponent<DirectionComponent>().Direction = Keys.Left;
-                        }
-                        break;
-                    }
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(-abs_velocity, 0);
+                    break;
                 case Keys.Right:
-                    {
-                        if (this.GetComponent<PositionComponent>().Position.Y % 40 < 10)
-                        {
-                            this.GetComponent<VelocityComponent>().Velocity = new Vector2(SNAKE_VEL, 0);
-                            Turn = Keys.None;
-                            this.GetComponent<PositionComponent>().Position =
-                                new Vector2(this.GetComponent<PositionComponent>().Position.X,
-                                this.GetComponent<PositionComponent>().Position.Y - this.GetComponent<PositionComponent>().Position.Y % 40);
-                            this.GetComponent<TextureComponent>()._Texture = textures["head_right"];
-                            this.GetComponent<DirectionComponent>().Direction = Keys.Right;
-                        }
-                        break;
-                    }
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(abs_velocity, 0);
+                    break;
             }
         }
     }

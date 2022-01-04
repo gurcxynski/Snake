@@ -15,13 +15,13 @@ namespace Snake.Core
     {
         const int SNAKE_VEL = 200;
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
-        Vector2 PrevVelocity = new Vector2(SNAKE_VEL, 0);
         EasyKeyboard keyboard = new EasyKeyboard();
         Keys Turn = Keys.None;
         bool IsPaused = true;
         int Score = 0;
         List<BodyFragment> fragments = new List<BodyFragment>();
-
+        Head SnakeHead = null;
+        Apple Apple = null;
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
@@ -48,11 +48,13 @@ namespace Snake.Core
             return null;
         }
 
-
         public bool Update(GraphicsDeviceManager graphics, Dictionary<string, Texture2D> textures, float UpdateTime)
         {
-            GameObject SnakeHead = GetObject<Head>();
-            GameObject Apple = GetObject<Apple>();
+            if(SnakeHead == null || Apple == null)
+            {
+               SnakeHead = GetObject<Head>();
+               Apple = GetObject<Apple>();
+            }  
 
             StringBuilder sb = new StringBuilder();
 
@@ -60,58 +62,24 @@ namespace Snake.Core
 
             if (keyboard.ReleasedThisFrame(Keys.Space))
             {
+                IsPaused = !IsPaused;
                 if (IsPaused)
-                {
-                    SnakeHead.GetComponent<VelocityComponent>().Velocity = PrevVelocity;
-                    foreach (var item in fragments)
-                    {
-                        item.Unpause();
-                    }
-                    IsPaused = false;
-                }
-                else
-                {
-                    PrevVelocity = SnakeHead.GetComponent<VelocityComponent>().Velocity;
-                    foreach (var item in fragments)
+                    foreach (var item in _gameObjects)
                     {
                         item.Pause();
+                        return true;
                     }
-                    IsPaused = true;
-                }
+                else
+                    foreach (var item in _gameObjects)
+                    {
+                        item.UnPause();
+                        return true;
+                    }
             }
 
-            if (IsPaused) SnakeHead.GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
-
-
-            if (!IsPaused && Turn == Keys.None)
+            foreach (var item in _gameObjects)
             {
-
-                if (keyboard.ReleasedThisFrame(Keys.Left) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Right)
-                {
-                    Turn = Keys.Left;
-                    sb.Append(Turn.ToString());
-                }
-                if (keyboard.ReleasedThisFrame(Keys.Right) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Left)
-                {
-                    Turn = Keys.Right;
-                    sb.Append(Turn.ToString());
-                }
-                if (keyboard.ReleasedThisFrame(Keys.Up) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Down)
-                {
-                    Turn = Keys.Up;
-                    sb.Append(Turn.ToString());
-                }
-                if (keyboard.ReleasedThisFrame(Keys.Down) && SnakeHead.GetComponent<DirectionComponent>().Direction != Keys.Up)
-                {
-                    Turn = Keys.Down;
-                    sb.Append(Turn.ToString());
-                }
-            }
-
-            if (!IsPaused && Turn != Keys.None)
-            {
-                SnakeHead.TurnObject(textures, Turn, SNAKE_VEL);
-                Turn = Keys.None;
+                item.Update(keyboard, textures, UpdateTime);
             }
 
             if (SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X < 0 || SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X > 10 ||
@@ -123,8 +91,9 @@ namespace Snake.Core
 
             SnakeHead.GetComponent<VelocityComponent>().Update(UpdateTime, SnakeHead);
             SnakeHead.GetComponent<PositionComponent>().Update(UpdateTime, SnakeHead.GetComponent<DirectionComponent>().Direction);
+            SnakeHead.TextureUpdate(textures);
 
-            if (Apple.GetComponent<CollisionChecker>().Check((Head)SnakeHead))
+            if (Apple.GetComponent<CollisionChecker>().Check(SnakeHead))
             {
                 Apple.GetComponent<PositionComponent>().Randomize();
                 Score++;
@@ -142,21 +111,17 @@ namespace Snake.Core
                 }
             }
 
-
+            
             foreach (var item in fragments)
             {
                 item.GetComponent<VelocityComponent>().Update(UpdateTime, item);
                 if (!IsPaused) item.BodyUpdate(SNAKE_VEL, textures);
+                sb.Append(item.prevRoundedPos).Append(item.GetComponent<PositionComponent>().RoundedPosition).Append(item.turn).Append(item.Turned).Append("\n");
+                
+                item.GetComponent<PositionComponent>().Update(UpdateTime, item.GetComponent<DirectionComponent>().Direction);
             }
 
-            
-            //sb.Append("X: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(SnakeHead.GetComponent<PositionComponent>().RoundedPosition.Y);
-            //sb.Append("   Apple: X: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.X).Append(";  Y: ").Append(Apple.GetComponent<PositionComponent>().RoundedPosition.Y);
-            //sb.Append("   Pause: ").Append(IsPaused);
-            //if (fragments.Count > 0) sb.Append(fragments[0].GetComponent<DirectionComponent>().Direction);
-
-
-            Debug.WriteLine(sb.ToString());
+            if (!IsPaused)Debug.WriteLine(sb.ToString());
 
             return true;
         }
