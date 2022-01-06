@@ -46,27 +46,26 @@ namespace Snake.GameObjects
             }
         }
 
-        public new void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public new void Update(float UpdateTime)
         {
-            UpdateTexture(textures);
-            
+            UpdateTexture();
         }
 
-        override protected void UpdateTexture(Dictionary<string, Texture2D> textures)
+        override protected void UpdateTexture()
         {
             switch (GetComponent<DirectionComponent>().Direction)
             {
                 case Keys.Up:
-                    GetComponent<TextureComponent>()._Texture = textures["body_ver"];
+                    GetComponent<TextureComponent>()._Texture = Globals.textures["body_ver"];
                     break;
                 case Keys.Down:
-                    GetComponent<TextureComponent>()._Texture = textures["body_ver"];
+                    GetComponent<TextureComponent>()._Texture = Globals.textures["body_ver"];
                     break;
                 case Keys.Left:
-                    GetComponent<TextureComponent>()._Texture = textures["body_hor"];
+                    GetComponent<TextureComponent>()._Texture = Globals.textures["body_hor"];
                     break;
                 case Keys.Right:
-                    GetComponent<TextureComponent>()._Texture = textures["body_hor"];
+                    GetComponent<TextureComponent>()._Texture = Globals.textures["body_hor"];
                     break;
             }
         }

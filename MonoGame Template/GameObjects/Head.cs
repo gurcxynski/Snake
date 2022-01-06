@@ -24,33 +24,33 @@ namespace Snake.GameObjects
             LastVelocity = new Vector2(200, 0);
         }
 
-        override protected void UpdateTexture(Dictionary<string, Texture2D> textures)
+        override protected void UpdateTexture()
         {
             switch (GetComponent<DirectionComponent>().Direction)
             {
                 case Keys.Up:
-                    texture = textures["head_up"];
+                    texture = Globals.textures["head_up"];
                     break;
                 case Keys.Down:
-                    texture = textures["head_down"];
+                    texture = Globals.textures["head_down"];
                     break;
                 case Keys.Left:
-                    texture = textures["head_left"];
+                    texture = Globals.textures["head_left"];
                     break;
                 case Keys.Right:
-                    texture = textures["head_right"];
+                    texture = Globals.textures["head_right"];
                     break;
             }
 
             GetComponent<TextureComponent>()._Texture = texture;
         }
 
-        public new void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public new void Update(float UpdateTime)
         {
-            UpdateTexture(textures);
+            UpdateTexture();
             foreach (var item in _components)
             {
-                item.Update(textures, UpdateTime);
+                item.Update(UpdateTime);
             }
         }
 

@@ -21,7 +21,7 @@ namespace Snake.Components
             PositionComponent = @object.GetComponent<PositionComponent>();
         }
 
-        public override void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public override void Update(float UpdateTime)
         {
             PositionComponent.Position = new Vector2(PositionComponent.Position.X + Velocity.X * UpdateTime,
             PositionComponent.Position.Y + Velocity.Y * UpdateTime);

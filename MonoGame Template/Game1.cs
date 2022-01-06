@@ -9,14 +9,17 @@ namespace Snake
 
 {
     /// This is the main type for your game.
-    
+    public static class Globals
+    {
+        public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+    }
+
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Scene GameScene = new Scene();
         Texture2D grass;
-        Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         SpriteFont font;
         bool GameRunning = true;
 
@@ -55,17 +58,17 @@ namespace Snake
             // TODO: use this.Content to load your game content here
             
             grass = Content.Load<Texture2D>("grass");
-            textures["head_down"] = Content.Load<Texture2D>("head_down");
-            textures["head_up"] = Content.Load<Texture2D>("head_up");
-            textures["head_left"] = Content.Load<Texture2D>("head_left");
-            textures["head_right"] = Content.Load<Texture2D>("head_right");
-            textures["apple_texture"] = Content.Load<Texture2D>("apple");
-            textures["body_hor"] = Content.Load<Texture2D>("body_horizontal");
-            textures["body_ver"] = Content.Load<Texture2D>("body_vertical");
+            Globals.textures["head_down"] = Content.Load<Texture2D>("head_down");
+            Globals.textures["head_up"] = Content.Load<Texture2D>("head_up");
+            Globals.textures["head_left"] = Content.Load<Texture2D>("head_left");
+            Globals.textures["head_right"] = Content.Load<Texture2D>("head_right");
+            Globals.textures["apple_texture"] = Content.Load<Texture2D>("apple");
+            Globals.textures["body_hor"] = Content.Load<Texture2D>("body_horizontal");
+            Globals.textures["body_ver"] = Content.Load<Texture2D>("body_vertical");
             font = Content.Load<SpriteFont>("Score");
 
-            GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
-            GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20)));
+            GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
+            GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20)));
         }
 
         /// UnloadContent will be called once per game and is the place to unload
@@ -82,7 +85,7 @@ namespace Snake
         
         protected override void Update(GameTime gameTime)
         {
-            if(GameRunning) GameRunning = GameScene.Update(textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            if(GameRunning) GameRunning = GameScene.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             
             base.Update(gameTime);
         }

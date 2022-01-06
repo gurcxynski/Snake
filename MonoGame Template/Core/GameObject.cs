@@ -31,11 +31,11 @@ namespace Snake.Core
             return null;
         }
 
-        public void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public void Update(float UpdateTime)
         {
             foreach (var component in _components)
             {
-                component.Update(textures, UpdateTime);
+                component.Update(UpdateTime);
             }
         }
 
@@ -76,6 +76,6 @@ namespace Snake.Core
                     break;
             }
         }
-        abstract protected void UpdateTexture(Dictionary<string, Texture2D> textures);
+        abstract protected void UpdateTexture();
     }
 }

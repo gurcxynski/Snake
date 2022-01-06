@@ -16,7 +16,7 @@ namespace Snake.Components
             Position = position;
             RoundedPosition = new Vector2((int)Position.X / 40, (int)Position.Y / 40);
         }
-        public override void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public override void Update(float UpdateTime)
         {
             RoundedPosition = new Vector2((int)Position.X / 40, (int)Position.Y / 40);
         }

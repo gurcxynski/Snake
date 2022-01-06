@@ -27,7 +27,7 @@ namespace Snake.GameObjects
         {
             return GetComponent<CollisionChecker>().Check(arg);
         }
-        protected override void UpdateTexture(Dictionary<string, Texture2D> textures)
+        protected override void UpdateTexture()
         {
 
         }

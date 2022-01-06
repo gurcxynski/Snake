@@ -8,7 +8,7 @@ namespace Snake.Core
 {
     abstract class Component
     {
-        public virtual void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public virtual void Update(float UpdateTime)
         {
 
         }

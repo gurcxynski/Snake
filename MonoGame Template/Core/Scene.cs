@@ -43,7 +43,7 @@ namespace Snake.Core
             return null;
         }
 
-        public bool Update(Dictionary<string, Texture2D> textures, float UpdateTime)
+        public bool Update(float UpdateTime)
         {
             /*if(SnakeHead == null || Apple == null)
             {
@@ -68,7 +68,7 @@ namespace Snake.Core
 
             foreach (var item in _gameObjects)
             {
-                item.Update(textures, UpdateTime);
+                item.Update(UpdateTime);
             }
 
             //Debug.WriteLine(sb.ToString());
