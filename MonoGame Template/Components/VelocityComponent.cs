@@ -1,31 +1,30 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Snake.Core;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Snake.Components
 {
     class VelocityComponent : Component
     {
-
         public Vector2 Velocity { get; set; } = new Vector2(0, 0);
-
-        public VelocityComponent(Vector2 arg)
+        public PositionComponent PositionComponent { get; set; }
+        public VelocityComponent(Vector2 arg, GameObject @object)
         {
             Velocity = arg;
+            PositionComponent = @object.GetComponent<PositionComponent>();
         }
 
-        public VelocityComponent()
+        public VelocityComponent(GameObject @object)
         {
             Velocity = new Vector2(0, 0);
+            PositionComponent = @object.GetComponent<PositionComponent>();
         }
 
-        public void Update(float UpdateTime, GameObject Object)
+        public override void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
         {
-            Object.GetComponent<PositionComponent>().Position = new Vector2(
-            Object.GetComponent<PositionComponent>().Position.X + Object.GetComponent<VelocityComponent>().Velocity.X * UpdateTime,
-            Object.GetComponent<PositionComponent>().Position.Y + Object.GetComponent<VelocityComponent>().Velocity.Y * UpdateTime);
+            PositionComponent.Position = new Vector2(PositionComponent.Position.X + Velocity.X * UpdateTime,
+            PositionComponent.Position.Y + Velocity.Y * UpdateTime);
         }
     }
 }

@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Snake.Core
 {
-    internal class Component
-    {   
-        public void Update(EasyKeyboard keyboard, Dictionary<string, Texture2D> textures, float UpdateTime)
+    abstract class Component
+    {
+        public virtual void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
         {
 
         }

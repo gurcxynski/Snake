@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using Snake.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Snake.Components
 {
@@ -11,7 +8,7 @@ namespace Snake.Components
         public Keys Direction { get; set; } 
         public DirectionComponent()
         {
-            Direction = Keys.Right;
+            Direction = Keys.None;
         }
         public DirectionComponent(Keys arg)
         {

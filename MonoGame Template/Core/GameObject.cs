@@ -7,11 +7,11 @@ using MonoGame.EasyInput;
 using Snake.Components;
 namespace Snake.Core
 {
-    class GameObject
+    abstract class GameObject
     {
-        private readonly List<Component> _components = new List<Component>();
-        Vector2 LastVelocity;
-
+        public List<Component> _components = new List<Component>();
+        protected Vector2 LastVelocity;
+        public int _index;
 
         public GameObject AddComponent(Component comp)
         {
@@ -31,17 +31,17 @@ namespace Snake.Core
             return null;
         }
 
-        public void Update(EasyKeyboard keyboard, Dictionary<string, Texture2D> textures, float UpdateTime)
+        public void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
         {
             foreach (var component in _components)
             {
-                component.Update(keyboard, textures, UpdateTime);
+                component.Update(textures, UpdateTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, GetComponent<PositionComponent>().Position, Color.White);
+            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, new Vector2(GetComponent<PositionComponent>().Position.X - 20, GetComponent<PositionComponent>().Position.Y - 20), Color.White);
         }
 
         public void Pause()
@@ -76,5 +76,6 @@ namespace Snake.Core
                     break;
             }
         }
+        abstract protected void UpdateTexture(Dictionary<string, Texture2D> textures);
     }
 }
