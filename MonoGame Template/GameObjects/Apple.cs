@@ -14,6 +14,7 @@ namespace Snake.GameObjects
             AddComponent(new TextureComponent(texture));
             AddComponent(new PositionComponent(Position));
             AddComponent(new CollisionChecker(this));
+            AddComponent(new VelocityComponent(this)); //has to exist with no real use
         }
         public void Randomize(int range)
         {

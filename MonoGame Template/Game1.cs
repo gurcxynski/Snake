@@ -82,7 +82,7 @@ namespace Snake
         
         protected override void Update(GameTime gameTime)
         {
-            if(GameRunning) GameRunning = GameScene.Update(graphics, textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            if(GameRunning) GameRunning = GameScene.Update(textures, (float)gameTime.ElapsedGameTime.TotalSeconds);
             
             base.Update(gameTime);
         }
