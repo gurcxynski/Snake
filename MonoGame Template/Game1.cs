@@ -64,8 +64,8 @@ namespace Snake
             textures["body_ver"] = Content.Load<Texture2D>("body_vertical");
             font = Content.Load<SpriteFont>("Score");
 
-            GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight / 2)));
-            GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(graphics.PreferredBackBufferWidth / 2 + 80, graphics.PreferredBackBufferHeight / 2)));
+            GameScene.AddGameObject(new Head(textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
+            GameScene.AddGameObject(new Apple(textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20)));
         }
 
         /// UnloadContent will be called once per game and is the place to unload
@@ -101,7 +101,7 @@ namespace Snake
 
             GameScene.Draw(spriteBatch, font);
 
-            if(!GameRunning) spriteBatch.DrawString(font, "GAME OVER", new Vector2(150, 180), Color.Black);
+            //if(!GameRunning) spriteBatch.DrawString(font, "GAME OVER", new Vector2(150, 180), Color.Black);
         
             spriteBatch.End();
 

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using MonoGame.EasyInput;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Snake.Core
 {
-    internal class Component
+    abstract class Component
     {
-        public void Update(float UpdateTime)
+        public virtual void Update(Dictionary<string, Texture2D> textures, float UpdateTime)
         {
 
         }

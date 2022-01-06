@@ -4,7 +4,6 @@ using Snake.Components;
 using Snake.Core;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Snake.GameObjects
 {
@@ -15,6 +14,21 @@ namespace Snake.GameObjects
             AddComponent(new TextureComponent(texture));
             AddComponent(new PositionComponent(Position));
             AddComponent(new CollisionChecker(this));
+        }
+        public void Randomize(int range)
+        {
+            Random rand = new Random();
+            int x = rand.Next(0, range - 1);
+            int y = rand.Next(0, range - 1);
+            GetComponent<PositionComponent>().Position = new Vector2(x * 40 + 20, y * 40 + 20);
+        }
+        public bool Check(GameObject arg)
+        {
+            return GetComponent<CollisionChecker>().Check(arg);
+        }
+        protected override void UpdateTexture(Dictionary<string, Texture2D> textures)
+        {
+
         }
     }
 }
