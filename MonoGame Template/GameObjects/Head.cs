@@ -53,8 +53,6 @@ namespace Snake.GameObjects
             direction = GetComponent<DirectionComponent>().Direction;
             position = GetComponent<PositionComponent>().Position;
 
-            Globals.sb.Append(GetComponent<PositionComponent>().RoundedPosition + "\n");
-
             UpdateTexture();
 
             if (queuedTurn == Keys.None) QueueTurn();
@@ -64,6 +62,7 @@ namespace Snake.GameObjects
             {
                 item.Update(UpdateTime);
             }
+
         }
 
         public bool Check(GameObject arg)

@@ -14,7 +14,8 @@ namespace Snake
     {
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         public static EasyKeyboard keyboard = new EasyKeyboard();
-        public static int BaseVel = 200;
+        public static int BaseVel = 150;
+        public static int Score = 0;
         public static StringBuilder sb = new StringBuilder();
     }
 
@@ -71,8 +72,8 @@ namespace Snake
             Globals.textures["body_ver"] = Content.Load<Texture2D>("body_vertical");
             font = Content.Load<SpriteFont>("Score");
 
-            GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
-            GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20)));
+            Head temp = (Head)GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
+            GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20), temp));
         }
 
         /// UnloadContent will be called once per game and is the place to unload

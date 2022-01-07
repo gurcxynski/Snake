@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Snake.GameObjects;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -8,9 +9,8 @@ namespace Snake.Core
     class Scene
     {
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
+        private readonly List<BodyFragment> _Fragments = new List<BodyFragment>();
         bool IsPaused = true;
-        //Head SnakeHead = null;
-        //Apple Apple = null;
 
         public GameObject AddGameObject(GameObject go)
         {
@@ -39,9 +39,6 @@ namespace Snake.Core
 
         public bool Update(float UpdateTime)
         {
-            //SnakeHead = GetObject<Head>();
-            //StringBuilder sb = new StringBuilder();
-
             Globals.keyboard.Update();
 
             if (Globals.keyboard.ReleasedThisFrame(Keys.Space))
@@ -56,6 +53,13 @@ namespace Snake.Core
             }
 
             if (IsPaused) return true;
+            
+
+            if (Globals.Score > _Fragments.Count)
+            {
+                if (Globals.Score == 1) _Fragments.Add((BodyFragment)AddGameObject(new BodyFragment(GetObject<Head>())));
+                else _Fragments.Add((BodyFragment)AddGameObject(new BodyFragment(_Fragments[Globals.Score - 2])));
+            }
 
             foreach (var item in _gameObjects)
             {

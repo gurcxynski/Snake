@@ -8,11 +8,14 @@ namespace Snake.GameObjects
 {
     internal class Apple : GameObject
     {
-        public Apple(Texture2D texture, Vector2 Position)
+        private Head _Snake;
+
+        public Apple(Texture2D texture, Vector2 Position, Head Snake)
         {
             AddComponent(new TextureComponent(texture));
             AddComponent(new PositionComponent(Position));
             AddComponent(new CollisionChecker(this));
+            _Snake = Snake;
         }
         public void Randomize(int range)
         {
@@ -31,7 +34,12 @@ namespace Snake.GameObjects
         }
         public override void Update(float UpdateTime)
         {
-            
+            if (Check(_Snake))
+            {
+                Randomize(10);
+                Globals.Score++;
+                GetComponent<PositionComponent>().Update(UpdateTime);
+            }
         }
         public override void Pause()
         {

@@ -15,7 +15,6 @@ namespace Snake.GameObjects
             _index = _daddy._index + 1;
             AddComponent(new DirectionComponent(_daddy.GetComponent<DirectionComponent>().Direction));
             AddComponent(new TextureComponent(Globals.textures["body_ver"]));
-
             switch (GetComponent<DirectionComponent>().Direction)
             {
                 case Keys.Left:
@@ -39,11 +38,13 @@ namespace Snake.GameObjects
                     AddComponent(new VelocityComponent(new Vector2(0, Globals.BaseVel), this));
                     break;
             }
+            AddComponent(new VelocityComponent(_daddy.GetComponent<VelocityComponent>().Velocity, this));
         }
 
         public override void Update(float UpdateTime)
         {
             UpdateTexture();
+            GetComponent<VelocityComponent>().Update(UpdateTime);
         }
 
         override protected void UpdateTexture()
