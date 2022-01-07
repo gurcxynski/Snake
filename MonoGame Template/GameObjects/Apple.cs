@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Snake.Components;
 using Snake.Core;
 using System;
-using System.Collections.Generic;
 
 namespace Snake.GameObjects
 {
@@ -14,7 +13,6 @@ namespace Snake.GameObjects
             AddComponent(new TextureComponent(texture));
             AddComponent(new PositionComponent(Position));
             AddComponent(new CollisionChecker(this));
-            AddComponent(new VelocityComponent(this)); //has to exist with no real use
         }
         public void Randomize(int range)
         {
@@ -30,6 +28,10 @@ namespace Snake.GameObjects
         protected override void UpdateTexture()
         {
 
+        }
+        public override void Update(float UpdateTime)
+        {
+            
         }
     }
 }

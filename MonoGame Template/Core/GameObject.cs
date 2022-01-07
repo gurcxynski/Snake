@@ -31,13 +31,7 @@ namespace Snake.Core
             return null;
         }
 
-        public void Update(float UpdateTime)
-        {
-            foreach (var component in _components)
-            {
-                component.Update(UpdateTime);
-            }
-        }
+        abstract public void Update(float UpdateTime);
 
         public void Draw(SpriteBatch spriteBatch)
         {

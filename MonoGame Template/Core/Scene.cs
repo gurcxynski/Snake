@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.EasyInput;
-using Snake.Components;
-using System.Collections.Generic;
-using System.Text;
-using System;
 using Snake.GameObjects;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Snake.Core
@@ -14,10 +9,10 @@ namespace Snake.Core
     class Scene
     {
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
-        EasyKeyboard keyboard = new EasyKeyboard();
         bool IsPaused = true;
         //Head SnakeHead = null;
         //Apple Apple = null;
+
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
@@ -45,33 +40,33 @@ namespace Snake.Core
 
         public bool Update(float UpdateTime)
         {
-            /*if(SnakeHead == null || Apple == null)
-            {
-               SnakeHead = GetObject<Head>();
-               Apple = GetObject<Apple>();
-            }  
-            */
+            //SnakeHead = GetObject<Head>();
             //StringBuilder sb = new StringBuilder();
 
-            keyboard.Update();
+            Globals.keyboard.Update();
 
-            if (keyboard.ReleasedThisFrame(Keys.Space))
+            if (Globals.keyboard.ReleasedThisFrame(Keys.Space))
             {
                 IsPaused = !IsPaused;
                 foreach (var item in _gameObjects)
                 {
-                    if(IsPaused) item.Pause();
-                    else item.UnPause();
+                    if (item.GetType() != typeof(Apple))
+                    {
+                        if (IsPaused) item.Pause();
+                        else item.UnPause();
+                    }
                 }
                 return true;
             }
+
+            if (IsPaused) return true;
 
             foreach (var item in _gameObjects)
             {
                 item.Update(UpdateTime);
             }
 
-            //Debug.WriteLine(sb.ToString());
+           Debug.WriteLine(Globals.sb.ToString());
 
             return true;
         }

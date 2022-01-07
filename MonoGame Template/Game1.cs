@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.EasyInput;
 using Snake.Core;
 using Snake.GameObjects;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Snake
 
@@ -12,6 +14,9 @@ namespace Snake
     public static class Globals
     {
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
+        public static EasyKeyboard keyboard = new EasyKeyboard();
+        public static int BaseVel = 200;
+        public static StringBuilder sb = new StringBuilder();
     }
 
     public class Game1 : Game

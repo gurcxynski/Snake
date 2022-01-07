@@ -11,6 +11,7 @@ namespace Snake.GameObjects
     internal class Head : GameObject
     {
         Texture2D texture;
+        Keys direction;
         public Head(Texture2D texture_arg, Vector2 Position)
         {
             AddComponent(new TextureComponent(texture_arg));
@@ -19,9 +20,9 @@ namespace Snake.GameObjects
             AddComponent(new VelocityComponent(this));
             AddComponent(new CollisionChecker(this));
 
-            texture = GetComponent<TextureComponent>()._Texture;
+            direction = GetComponent<DirectionComponent>().Direction;
             _index = -1;
-            LastVelocity = new Vector2(200, 0);
+            LastVelocity = new Vector2(Globals.BaseVel, 0);
         }
 
         override protected void UpdateTexture()
@@ -45,9 +46,13 @@ namespace Snake.GameObjects
             GetComponent<TextureComponent>()._Texture = texture;
         }
 
-        public new void Update(float UpdateTime)
+        public override void Update(float UpdateTime)
         {
+            direction = GetComponent<DirectionComponent>().Direction;
+            Globals.sb.Append(GetComponent<PositionComponent>().RoundedPosition + "\n");
+
             UpdateTexture();
+            Turn();
             foreach (var item in _components)
             {
                 item.Update(UpdateTime);
@@ -57,6 +62,26 @@ namespace Snake.GameObjects
         public bool Check(GameObject arg)
         {
             return GetComponent<CollisionChecker>().Check(arg);
+        }
+
+        public void Turn()
+        {
+            if (Globals.keyboard.ReleasedThisFrame(Keys.Left) && direction != Keys.Right)
+            {
+                TurnObject(Keys.Left);
+            }
+            else if (Globals.keyboard.ReleasedThisFrame(Keys.Right) && direction != Keys.Left)
+            {
+                TurnObject(Keys.Right);
+            }
+            else if (Globals.keyboard.ReleasedThisFrame(Keys.Up) && direction != Keys.Down)
+            {
+                TurnObject(Keys.Up);
+            }
+            else if (Globals.keyboard.ReleasedThisFrame(Keys.Down) && direction != Keys.Up)
+            {
+                TurnObject(Keys.Down);
+            }
         }
     }
 }
