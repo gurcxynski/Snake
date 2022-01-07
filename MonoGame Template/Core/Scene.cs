@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Snake.GameObjects;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -50,11 +49,8 @@ namespace Snake.Core
                 IsPaused = !IsPaused;
                 foreach (var item in _gameObjects)
                 {
-                    if (item.GetType() != typeof(Apple))
-                    {
-                        if (IsPaused) item.Pause();
-                        else item.UnPause();
-                    }
+                    if (IsPaused) item.Pause();
+                    else item.UnPause();
                 }
                 return true;
             }
@@ -66,7 +62,7 @@ namespace Snake.Core
                 item.Update(UpdateTime);
             }
 
-           Debug.WriteLine(Globals.sb.ToString());
+            Debug.WriteLine(Globals.sb.ToString());
 
             return true;
         }

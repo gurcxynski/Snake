@@ -33,5 +33,14 @@ namespace Snake.GameObjects
         {
             
         }
+        public override void Pause()
+        {
+
+        }
+
+        public override void UnPause()
+        {
+
+        }
     }
 }

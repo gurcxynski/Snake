@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.EasyInput;
 using Snake.Components;
 using Snake.Core;
 
@@ -10,8 +8,10 @@ namespace Snake.GameObjects
 {
     internal class Head : GameObject
     {
-        Texture2D texture;
-        Keys direction;
+        private Texture2D texture;
+        private Keys direction;
+        private Keys queuedTurn = Keys.None;
+        private Vector2 position;
         public Head(Texture2D texture_arg, Vector2 Position)
         {
             AddComponent(new TextureComponent(texture_arg));
@@ -21,6 +21,8 @@ namespace Snake.GameObjects
             AddComponent(new CollisionChecker(this));
 
             direction = GetComponent<DirectionComponent>().Direction;
+            position = GetComponent<PositionComponent>().Position;
+
             _index = -1;
             LastVelocity = new Vector2(Globals.BaseVel, 0);
         }
@@ -49,10 +51,15 @@ namespace Snake.GameObjects
         public override void Update(float UpdateTime)
         {
             direction = GetComponent<DirectionComponent>().Direction;
+            position = GetComponent<PositionComponent>().Position;
+
             Globals.sb.Append(GetComponent<PositionComponent>().RoundedPosition + "\n");
 
             UpdateTexture();
-            Turn();
+
+            if (queuedTurn == Keys.None) QueueTurn();
+            else TryTurn(queuedTurn);
+
             foreach (var item in _components)
             {
                 item.Update(UpdateTime);
@@ -64,24 +71,69 @@ namespace Snake.GameObjects
             return GetComponent<CollisionChecker>().Check(arg);
         }
 
-        public void Turn()
+        private Keys QueueTurn()
         {
             if (Globals.keyboard.ReleasedThisFrame(Keys.Left) && direction != Keys.Right)
             {
-                TurnObject(Keys.Left);
+                queuedTurn = Keys.Left;
             }
             else if (Globals.keyboard.ReleasedThisFrame(Keys.Right) && direction != Keys.Left)
             {
-                TurnObject(Keys.Right);
+                queuedTurn = Keys.Right;
             }
             else if (Globals.keyboard.ReleasedThisFrame(Keys.Up) && direction != Keys.Down)
             {
-                TurnObject(Keys.Up);
+                queuedTurn = Keys.Up;
             }
             else if (Globals.keyboard.ReleasedThisFrame(Keys.Down) && direction != Keys.Up)
             {
-                TurnObject(Keys.Down);
+                queuedTurn = Keys.Down;
             }
+            return queuedTurn;
+        }
+
+        private bool TryTurn(Keys turn)
+        {
+            switch (turn)
+            {
+                case Keys.Left:
+                    if ((position.Y + 30) % 40 < 20)
+                    {
+                        TurnObject(Keys.Left);
+                        GetComponent<PositionComponent>().Position = new Vector2(position.X, 40 * GetComponent<PositionComponent>().RoundedPosition.Y + 20);
+                        queuedTurn = Keys.None;
+                        return true;
+                    }
+                    break;
+                case Keys.Right:
+                    if ((position.Y + 30) % 40 < 20)
+                    {
+                        TurnObject(Keys.Right);
+                        GetComponent<PositionComponent>().Position = new Vector2(position.X, 40 * GetComponent<PositionComponent>().RoundedPosition.Y + 20);
+                        queuedTurn = Keys.None;
+                        return true;
+                    }
+                    break;
+                case Keys.Up:
+                    if ((position.X + 30) % 40 < 20)
+                    {
+                        TurnObject(Keys.Up);
+                        GetComponent<PositionComponent>().Position = new Vector2(40 * GetComponent<PositionComponent>().RoundedPosition.X + 20, position.Y);
+                        queuedTurn = Keys.None;
+                        return true;
+                    }
+                    break;
+                case Keys.Down:
+                    if ((position.X + 30) % 40 < 20)
+                    {
+                        TurnObject(Keys.Down); 
+                        GetComponent<PositionComponent>().Position = new Vector2(40 * GetComponent<PositionComponent>().RoundedPosition.X + 20, position.Y);
+                        queuedTurn = Keys.None;
+                        return true;
+                    }
+                    break;
+            }
+            return false;
         }
     }
 }

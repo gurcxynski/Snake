@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.EasyInput;
 using Snake.Components;
 namespace Snake.Core
 {
@@ -38,13 +36,13 @@ namespace Snake.Core
             spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, new Vector2(GetComponent<PositionComponent>().Position.X - 20, GetComponent<PositionComponent>().Position.Y - 20), Color.White);
         }
 
-        public void Pause()
+        public virtual void Pause()
         {
             LastVelocity = GetComponent<VelocityComponent>().Velocity;
             GetComponent<VelocityComponent>().Velocity = new Vector2(0, 0);
         }
 
-        public void UnPause()
+        public virtual void UnPause()
         {
             GetComponent<VelocityComponent>().Velocity = LastVelocity;
         }
