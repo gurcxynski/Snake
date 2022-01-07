@@ -10,7 +10,7 @@ namespace Snake.Core
         public List<Component> _components = new List<Component>();
         protected Vector2 LastVelocity;
         public int _index;
-
+        public Keys turned;
         public GameObject AddComponent(Component comp)
         {
             _components.Add(comp);
@@ -34,6 +34,7 @@ namespace Snake.Core
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, new Vector2(GetComponent<PositionComponent>().Position.X - 20, GetComponent<PositionComponent>().Position.Y - 20), Color.White);
+            //spriteBatch.DrawString(Globals.font, _index.ToString(), new Vector2(GetComponent<PositionComponent>().Position.X - 10, GetComponent<PositionComponent>().Position.Y - 10), Color.Black);
         }
 
         public virtual void Pause()
@@ -50,24 +51,25 @@ namespace Snake.Core
 
         public void TurnObject(Keys Turn)
         {
-            int abs_velocity = (int)GetComponent<VelocityComponent>().Velocity.Length();
             GetComponent<DirectionComponent>().Direction = Turn;
             switch (Turn)
             {
                 case Keys.Up:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, -abs_velocity);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, -Globals.BaseVel);
                     break;
                 case Keys.Down:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, +abs_velocity);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, +Globals.BaseVel);
                     break;
                 case Keys.Left:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(-abs_velocity, 0);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(-Globals.BaseVel, 0);
                     break;
                 case Keys.Right:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(abs_velocity, 0);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(Globals.BaseVel, 0);
                     break;
             }
+            turned = Turn;
         }
         abstract protected void UpdateTexture();
+
     }
 }

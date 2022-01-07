@@ -125,7 +125,7 @@ namespace Snake.GameObjects
                 case Keys.Down:
                     if ((position.X + 30) % 40 < 20)
                     {
-                        TurnObject(Keys.Down); 
+                        TurnObject(Keys.Down);
                         GetComponent<PositionComponent>().Position = new Vector2(40 * GetComponent<PositionComponent>().RoundedPosition.X + 20, position.Y);
                         queuedTurn = Keys.None;
                         return true;

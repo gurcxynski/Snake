@@ -10,6 +10,7 @@ namespace Snake.Core
     {
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
         private readonly List<BodyFragment> _Fragments = new List<BodyFragment>();
+        BodyFragment LastAdded;
         bool IsPaused = true;
 
         public GameObject AddGameObject(GameObject go)
@@ -17,7 +18,7 @@ namespace Snake.Core
             _gameObjects.Add(go);
             return go;
         }
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var item in _gameObjects)
             {
@@ -54,11 +55,13 @@ namespace Snake.Core
 
             if (IsPaused) return true;
             
-
-            if (Globals.Score > _Fragments.Count)
+            if(Globals.Score == 1 && LastAdded == null)
             {
-                if (Globals.Score == 1) _Fragments.Add((BodyFragment)AddGameObject(new BodyFragment(GetObject<Head>())));
-                else _Fragments.Add((BodyFragment)AddGameObject(new BodyFragment(_Fragments[Globals.Score - 2])));
+                LastAdded = (BodyFragment)AddGameObject(new BodyFragment(GetObject<Head>()));
+            }
+            else if (LastAdded != null && Globals.Score > LastAdded._index + 1)
+            {
+                LastAdded = (BodyFragment)AddGameObject(new BodyFragment(LastAdded));
             }
 
             foreach (var item in _gameObjects)

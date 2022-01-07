@@ -9,6 +9,9 @@ namespace Snake.GameObjects
     {
         readonly GameObject _daddy;
 
+        Keys queuedTurn = Keys.None;
+        Vector2 lastRoundedPos;
+
         public BodyFragment(GameObject daddy)
         {
             _daddy = daddy;
@@ -45,6 +48,8 @@ namespace Snake.GameObjects
         {
             UpdateTexture();
             GetComponent<VelocityComponent>().Update(UpdateTime);
+            UpdateTurn();
+            GetComponent<PositionComponent>().Update(UpdateTime);
         }
 
         override protected void UpdateTexture()
@@ -63,6 +68,40 @@ namespace Snake.GameObjects
                 case Keys.Right:
                     GetComponent<TextureComponent>()._Texture = Globals.textures["body_hor"];
                     break;
+            }
+        }
+
+        private void UpdateTurn()
+        {
+            if (_daddy.turned != Keys.None)
+            {
+                queuedTurn = _daddy.turned;
+                _daddy.turned = Keys.None;
+                lastRoundedPos = GetComponent<PositionComponent>().RoundedPosition;
+            }
+            if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos)
+            {
+                switch (queuedTurn)
+                {
+                    case Keys.Left:
+                        TurnObject(Keys.Left);
+                        GetComponent<PositionComponent>().Position = new Vector2(_daddy.GetComponent<PositionComponent>().Position.X + 40, _daddy.GetComponent<PositionComponent>().Position.Y);
+                        break;
+                    case Keys.Right:
+                        TurnObject(Keys.Right);
+                        GetComponent<PositionComponent>().Position = new Vector2(_daddy.GetComponent<PositionComponent>().Position.X - 40, _daddy.GetComponent<PositionComponent>().Position.Y);
+                        break;
+                    case Keys.Up:
+                        TurnObject(Keys.Up);
+                        GetComponent<PositionComponent>().Position = new Vector2(_daddy.GetComponent<PositionComponent>().Position.X, _daddy.GetComponent<PositionComponent>().Position.Y + 40);
+                        break;
+                    case Keys.Down:
+                        TurnObject(Keys.Down);
+                        GetComponent<PositionComponent>().Position = new Vector2(_daddy.GetComponent<PositionComponent>().Position.X, _daddy.GetComponent<PositionComponent>().Position.Y - 40);
+                        break;
+                }
+                turned = queuedTurn;
+                queuedTurn = Keys.None;
             }
         }
     }

@@ -14,9 +14,11 @@ namespace Snake
     {
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         public static EasyKeyboard keyboard = new EasyKeyboard();
-        public static int BaseVel = 150;
+        public static int BaseVel = 175;
         public static int Score = 0;
         public static StringBuilder sb = new StringBuilder();
+        public static SpriteFont font;
+        public static bool GameRunning = true;
     }
 
     public class Game1 : Game
@@ -25,8 +27,6 @@ namespace Snake
         SpriteBatch spriteBatch;
         Scene GameScene = new Scene();
         Texture2D grass;
-        SpriteFont font;
-        bool GameRunning = true;
 
         public Game1()
         {
@@ -62,15 +62,15 @@ namespace Snake
 
             // TODO: use this.Content to load your game content here
             
-            grass = Content.Load<Texture2D>("grass");
-            Globals.textures["head_down"] = Content.Load<Texture2D>("head_down");
-            Globals.textures["head_up"] = Content.Load<Texture2D>("head_up");
-            Globals.textures["head_left"] = Content.Load<Texture2D>("head_left");
-            Globals.textures["head_right"] = Content.Load<Texture2D>("head_right");
+            grass =                             Content.Load<Texture2D>("grass");
+            Globals.textures["head_down"] =     Content.Load<Texture2D>("head_down");
+            Globals.textures["head_up"] =       Content.Load<Texture2D>("head_up");
+            Globals.textures["head_left"] =     Content.Load<Texture2D>("head_left");
+            Globals.textures["head_right"] =    Content.Load<Texture2D>("head_right");
             Globals.textures["apple_texture"] = Content.Load<Texture2D>("apple");
-            Globals.textures["body_hor"] = Content.Load<Texture2D>("body_horizontal");
-            Globals.textures["body_ver"] = Content.Load<Texture2D>("body_vertical");
-            font = Content.Load<SpriteFont>("Score");
+            Globals.textures["body_hor"] =      Content.Load<Texture2D>("body_horizontal");
+            Globals.textures["body_ver"] =      Content.Load<Texture2D>("body_vertical");
+            Globals.font =                      Content.Load<SpriteFont>("Score");
 
             Head temp = (Head)GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
             GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20), temp));
@@ -90,7 +90,7 @@ namespace Snake
         
         protected override void Update(GameTime gameTime)
         {
-            if(GameRunning) GameRunning = GameScene.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            if(Globals.GameRunning) Globals.GameRunning = GameScene.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             
             base.Update(gameTime);
         }
@@ -107,7 +107,7 @@ namespace Snake
 
             spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
 
-            GameScene.Draw(spriteBatch, font);
+            GameScene.Draw(spriteBatch);
 
             //if(!GameRunning) spriteBatch.DrawString(font, "GAME OVER", new Vector2(150, 180), Color.Black);
         

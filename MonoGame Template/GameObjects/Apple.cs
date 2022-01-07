@@ -24,17 +24,13 @@ namespace Snake.GameObjects
             int y = rand.Next(0, range - 1);
             GetComponent<PositionComponent>().Position = new Vector2(x * 40 + 20, y * 40 + 20);
         }
-        public bool Check(GameObject arg)
-        {
-            return GetComponent<CollisionChecker>().Check(arg);
-        }
         protected override void UpdateTexture()
         {
 
         }
         public override void Update(float UpdateTime)
         {
-            if (Check(_Snake))
+            if (GetComponent<CollisionChecker>().Check(_Snake))
             {
                 Randomize(10);
                 Globals.Score++;
