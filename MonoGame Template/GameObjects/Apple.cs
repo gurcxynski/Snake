@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Snake.Components;
 using Snake.Core;
 using System;
@@ -23,6 +24,7 @@ namespace Snake.GameObjects
             int x = rand.Next(0, range - 1);
             int y = rand.Next(0, range - 1);
             GetComponent<PositionComponent>().Position = new Vector2(x * 40 + 20, y * 40 + 20);
+            GetComponent<PositionComponent>().Update();
         }
         protected override void UpdateTexture()
         {
@@ -35,6 +37,7 @@ namespace Snake.GameObjects
                 Randomize(10);
                 Globals.Score++;
                 GetComponent<PositionComponent>().Update(UpdateTime);
+                Globals.bloop.Play();
             }
         }
         public override void Pause()
@@ -45,6 +48,10 @@ namespace Snake.GameObjects
         public override void UnPause()
         {
 
+        }
+        public bool Check(GameObject arg)
+        {
+            return GetComponent<CollisionChecker>().Check(arg);
         }
     }
 }

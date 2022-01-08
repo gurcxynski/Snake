@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin 341695__projectsu012__coins-1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:341695__projectsu012__coins-1.wav;bloop.wav
+
 #begin apple.png
 /importer:TextureImporter
 /processor:TextureProcessor

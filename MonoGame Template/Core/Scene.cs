@@ -12,7 +12,7 @@ namespace Snake.Core
         private readonly List<BodyFragment> _Fragments = new List<BodyFragment>();
         BodyFragment LastAdded;
         bool IsPaused = true;
-
+        int a = 0;
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);
@@ -69,9 +69,16 @@ namespace Snake.Core
                 item.Update(UpdateTime);
             }
 
+            foreach (var item in _gameObjects)
+            {
+                if (item.GetType() == typeof(BodyFragment) && GetObject<Apple>().Check(item))
+                    GetObject<Apple>().Randomize(10);
+            }
+            
+            Globals.sb.Append('\n'); 
             Debug.WriteLine(Globals.sb.ToString());
 
-            return true;
+            return Globals.GameRunning;
         }
     }
 }

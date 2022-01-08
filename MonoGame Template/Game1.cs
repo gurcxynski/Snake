@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.EasyInput;
 using Snake.Core;
@@ -14,12 +15,13 @@ namespace Snake
     {
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         public static EasyKeyboard keyboard = new EasyKeyboard();
-        public static int BaseVel = 80;
+        public static int BaseVel = 175;
         public static int Score = 0;
         public static StringBuilder sb = new StringBuilder();
         public static SpriteFont font;
         public static bool GameRunning = true;
         public static int Size = 400;
+        public static SoundEffect bloop;
     }
 
     public class Game1 : Game
@@ -72,6 +74,8 @@ namespace Snake
             Globals.textures["body_hor"] =      Content.Load<Texture2D>("body_horizontal");
             Globals.textures["body_ver"] =      Content.Load<Texture2D>("body_vertical");
             Globals.font =                      Content.Load<SpriteFont>("Score");
+            Globals.bloop =                     Content.Load<SoundEffect>("bloop");   
+
 
             Head temp = (Head)GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, Globals.Size / 2 - 20)));
             GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, Globals.Size / 2 - 20), temp));

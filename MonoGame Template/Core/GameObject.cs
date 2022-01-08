@@ -34,7 +34,7 @@ namespace Snake.Core
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, new Vector2(GetComponent<PositionComponent>().Position.X - 20, GetComponent<PositionComponent>().Position.Y - 20), Color.White);
-            //spriteBatch.DrawString(Globals.font, _index.ToString(), new Vector2(GetComponent<PositionComponent>().Position.X - 10, GetComponent<PositionComponent>().Position.Y - 10), Color.Black);
+            spriteBatch.DrawString(Globals.font, (GetComponent<PositionComponent>().RoundedPosition.X + "," + GetComponent<PositionComponent>().RoundedPosition.Y), new Vector2(GetComponent<PositionComponent>().Position.X - 10, GetComponent<PositionComponent>().Position.Y - 10), Color.Black);
         }
 
         public virtual void Pause()

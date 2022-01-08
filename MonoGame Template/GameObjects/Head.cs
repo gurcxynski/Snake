@@ -63,6 +63,10 @@ namespace Snake.GameObjects
                 item.Update(UpdateTime);
             }
 
+
+            if (GetComponent<PositionComponent>().Position.X < 0 || GetComponent<PositionComponent>().Position.X > Globals.Size
+                || GetComponent<PositionComponent>().Position.Y < 0 || GetComponent<PositionComponent>().Position.Y > Globals.Size) Globals.GameRunning = false;
+
         }
 
         public bool Check(GameObject arg)
