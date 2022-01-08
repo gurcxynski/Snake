@@ -14,11 +14,12 @@ namespace Snake
     {
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         public static EasyKeyboard keyboard = new EasyKeyboard();
-        public static int BaseVel = 175;
+        public static int BaseVel = 80;
         public static int Score = 0;
         public static StringBuilder sb = new StringBuilder();
         public static SpriteFont font;
         public static bool GameRunning = true;
+        public static int Size = 400;
     }
 
     public class Game1 : Game
@@ -44,8 +45,8 @@ namespace Snake
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 400;
-            graphics.PreferredBackBufferHeight = 400;
+            graphics.PreferredBackBufferWidth = Globals.Size;
+            graphics.PreferredBackBufferHeight = Globals.Size;
 
             graphics.ApplyChanges();
 
@@ -72,8 +73,8 @@ namespace Snake
             Globals.textures["body_ver"] =      Content.Load<Texture2D>("body_vertical");
             Globals.font =                      Content.Load<SpriteFont>("Score");
 
-            Head temp = (Head)GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, graphics.PreferredBackBufferHeight / 2 - 20)));
-            GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, graphics.PreferredBackBufferHeight / 2 - 20), temp));
+            Head temp = (Head)GameScene.AddGameObject(new Head(Globals.textures["head_right"], new Vector2(100, Globals.Size / 2 - 20)));
+            GameScene.AddGameObject(new Apple(Globals.textures["apple_texture"], new Vector2(180, Globals.Size / 2 - 20), temp));
         }
 
         /// UnloadContent will be called once per game and is the place to unload
@@ -103,7 +104,7 @@ namespace Snake
 
             spriteBatch.Begin();
 
-            GraphicsDevice.Clear(new Color(255, 183, 197));
+            GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Draw(grass, new Vector2(0, 0), Color.White);
 

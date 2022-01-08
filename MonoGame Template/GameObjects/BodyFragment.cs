@@ -79,7 +79,27 @@ namespace Snake.GameObjects
                 _daddy.turned = Keys.None;
                 lastRoundedPos = GetComponent<PositionComponent>().RoundedPosition;
             }
-            if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos)
+            bool TurnNow = false;
+            switch (GetComponent<DirectionComponent>().Direction)
+            {
+                case Keys.Left:
+                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.X + 20) % 40 < 10)
+                        TurnNow = true;
+                    break;
+                case Keys.Right:
+                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.X + 20) % 40 > 30)
+                        TurnNow = true;
+                    break;
+                case Keys.Up:
+                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.Y - 20) % 40 < 10)
+                        TurnNow = true;
+                    break;
+                case Keys.Down:
+                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.Y - 20) % 40 > 30)
+                        TurnNow = true;
+                    break;
+            }
+            if (TurnNow)
             {
                 switch (queuedTurn)
                 {
