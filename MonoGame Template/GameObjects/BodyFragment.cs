@@ -23,33 +23,34 @@ namespace Snake.GameObjects
                 case Keys.Left:
                     AddComponent(new PositionComponent(new Vector2(_daddy.GetComponent<PositionComponent>().Position.X + 40, 
                         _daddy.GetComponent<PositionComponent>().Position.Y)));
-                    AddComponent(new VelocityComponent(new Vector2(-Globals.BaseVel, 0), this));
+                    AddComponent(new VelocityComponent(new Vector2(-Settings.BaseVel, 0), this));
                     break;
                 case Keys.Right:
                     AddComponent(new PositionComponent(new Vector2(_daddy.GetComponent<PositionComponent>().Position.X - 40, 
                         _daddy.GetComponent<PositionComponent>().Position.Y)));
-                    AddComponent(new VelocityComponent(new Vector2(Globals.BaseVel, 0), this));
+                    AddComponent(new VelocityComponent(new Vector2(Settings.BaseVel, 0), this));
                     break;
                 case Keys.Up:
                     AddComponent(new PositionComponent(new Vector2(_daddy.GetComponent<PositionComponent>().Position.X, 
                         _daddy.GetComponent<PositionComponent>().Position.Y + 40)));
-                    AddComponent(new VelocityComponent(new Vector2(0, -Globals.BaseVel), this));
+                    AddComponent(new VelocityComponent(new Vector2(0, -Settings.BaseVel), this));
                     break;
                 case Keys.Down:
                     AddComponent(new PositionComponent(new Vector2(_daddy.GetComponent<PositionComponent>().Position.X, 
                         _daddy.GetComponent<PositionComponent>().Position.Y - 40)));
-                    AddComponent(new VelocityComponent(new Vector2(0, Globals.BaseVel), this));
+                    AddComponent(new VelocityComponent(new Vector2(0, Settings.BaseVel), this));
                     break;
             }
             AddComponent(new VelocityComponent(_daddy.GetComponent<VelocityComponent>().Velocity, this));
         }
 
-        public override void Update(float UpdateTime)
+        public override bool Update(float UpdateTime)
         {
             UpdateTexture();
             GetComponent<VelocityComponent>().Update(UpdateTime);
             UpdateTurn();
             GetComponent<PositionComponent>().Update(UpdateTime);
+            return false;
         }
 
         override protected void UpdateTexture()

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Audio;
 using Snake.Components;
 using Snake.Core;
 using System;
@@ -30,15 +29,16 @@ namespace Snake.GameObjects
         {
 
         }
-        public override void Update(float UpdateTime)
+        public override bool Update(float UpdateTime)
         {
             if (GetComponent<CollisionChecker>().Check(_Snake))
             {
                 Randomize(10);
-                Globals.Score++;
                 GetComponent<PositionComponent>().Update(UpdateTime);
-                Globals.bloop.Play();
+                if(Settings.sound) Globals.bloop.Play();
+                return true;
             }
+            return false;
         }
         public override void Pause()
         {

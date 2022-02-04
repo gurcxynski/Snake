@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Snake.Core;
-using System.Collections.Generic;
 
 namespace Snake.Components
 {
@@ -17,7 +15,7 @@ namespace Snake.Components
 
         public VelocityComponent(GameObject @object)
         {
-            Velocity = new Vector2(0, 0);
+            Velocity = new Vector2(Settings.BaseVel, 0);
             PositionComponent = @object.GetComponent<PositionComponent>();
         }
 

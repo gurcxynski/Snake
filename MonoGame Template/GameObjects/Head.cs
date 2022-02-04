@@ -27,7 +27,7 @@ namespace Snake.GameObjects
             position = GetComponent<PositionComponent>().Position;
 
             _index = -1;
-            LastVelocity = new Vector2(Globals.BaseVel, 0);
+            LastVelocity = new Vector2(Settings.BaseVel, 0);
         }
 
         override protected void UpdateTexture()
@@ -51,7 +51,7 @@ namespace Snake.GameObjects
             GetComponent<TextureComponent>()._Texture = texture;
         }
 
-        public override void Update(float UpdateTime)
+        public override bool Update(float UpdateTime)
         {
             direction = GetComponent<DirectionComponent>().Direction;
             position = GetComponent<PositionComponent>().Position;
@@ -61,18 +61,18 @@ namespace Snake.GameObjects
             UpdateTexture();
 
             if (queuedTurn == Keys.None) QueueTurn();
-            if(!turned_this_pos) TryTurn(queuedTurn);
+            if (!turned_this_pos) TryTurn(queuedTurn);
 
             foreach (var item in _components)
             {
                 item.Update(UpdateTime);
             }
-            
-            Globals.sb.Append(queuedTurn.ToString());
 
-            if (GetComponent<PositionComponent>().Position.X < 0 || GetComponent<PositionComponent>().Position.X > Globals.Size
-                || GetComponent<PositionComponent>().Position.Y < 0 || GetComponent<PositionComponent>().Position.Y > Globals.Size) Globals.GameRunning = false;
-
+            if (!Settings.godmode && (position.X < 0 || position.X > Settings.Size || position.Y < 0 || position.Y > Settings.Size))
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool Check(GameObject arg)
