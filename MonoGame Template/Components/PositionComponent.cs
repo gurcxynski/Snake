@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Snake.Core;
-using System.Collections.Generic;
 
 namespace Snake.Components
 {
@@ -18,10 +16,10 @@ namespace Snake.Components
         }
         public override void Update(float UpdateTime)
         {
-            /*if (Position.X < 0) Position = new Vector2(Globals.Size, Position.Y);
-            if (Position.X > Globals.Size) Position = new Vector2(0, Position.Y);
-            if (Position.Y < 0) Position = new Vector2(Position.X, Globals.Size);
-            if (Position.Y > Globals.Size) Position = new Vector2(Position.X, 0);*/
+            if (Position.X < 0) Position = new Vector2(Settings.Size, Position.Y);
+            if (Position.X > Settings.Size) Position = new Vector2(0, Position.Y);
+            if (Position.Y < 0) Position = new Vector2(Position.X, Settings.Size);
+            if (Position.Y > Settings.Size) Position = new Vector2(Position.X, 0);
 
             RoundedPosition = new Vector2((int)Position.X / 40, (int)Position.Y / 40);
         }

@@ -30,7 +30,7 @@ namespace Snake.Core
             return null;
         }
 
-        abstract public void Update(float UpdateTime);
+        abstract public bool Update(float UpdateTime);
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -55,16 +55,16 @@ namespace Snake.Core
             switch (Turn)
             {
                 case Keys.Up:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, -Globals.BaseVel);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, -Settings.BaseVel);
                     break;
                 case Keys.Down:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, +Globals.BaseVel);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(0, +Settings.BaseVel);
                     break;
                 case Keys.Left:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(-Globals.BaseVel, 0);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(-Settings.BaseVel, 0);
                     break;
                 case Keys.Right:
-                    GetComponent<VelocityComponent>().Velocity = new Vector2(Globals.BaseVel, 0);
+                    GetComponent<VelocityComponent>().Velocity = new Vector2(Settings.BaseVel, 0);
                     break;
             }
             turned = Turn;

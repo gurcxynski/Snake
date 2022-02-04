@@ -3,7 +3,6 @@
  * Author: Ronen Ness.
  * Since: 2018.
  */
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonoGame.EasyInput
