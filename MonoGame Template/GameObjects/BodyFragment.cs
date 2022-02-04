@@ -73,29 +73,31 @@ namespace Snake.GameObjects
 
         private void UpdateTurn()
         {
-            if (_daddy.turned != Keys.None)
+            if (_daddy.turned != Keys.None && queuedTurn == Keys.None)
             {
                 queuedTurn = _daddy.turned;
                 _daddy.turned = Keys.None;
                 lastRoundedPos = GetComponent<PositionComponent>().RoundedPosition;
             }
             bool TurnNow = false;
-            switch (GetComponent<DirectionComponent>().Direction)
+            Vector2 position = GetComponent<PositionComponent>().Position;
+
+            if(queuedTurn != Keys.None && GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos) switch (GetComponent<DirectionComponent>().Direction)
             {
                 case Keys.Left:
-                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.X + 20) % 40 < 10)
+                    if (position.X % 40 < 20)
                         TurnNow = true;
                     break;
                 case Keys.Right:
-                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.X + 20) % 40 > 30)
+                    if (position.X % 40 > 20)
                         TurnNow = true;
                     break;
                 case Keys.Up:
-                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.Y - 20) % 40 < 10)
+                    if (position.Y % 40 < 20)
                         TurnNow = true;
                     break;
                 case Keys.Down:
-                    if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos && (GetComponent<PositionComponent>().Position.Y - 20) % 40 > 30)
+                    if (position.Y % 40 > 20)
                         TurnNow = true;
                     break;
             }
