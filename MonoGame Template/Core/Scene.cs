@@ -9,10 +9,8 @@ namespace Snake.Core
     class Scene
     {
         private readonly List<GameObject> _gameObjects = new List<GameObject>();
-        private readonly List<BodyFragment> _Fragments = new List<BodyFragment>();
         BodyFragment LastAdded;
         bool IsPaused = true;
-        int a = 0;
         public GameObject AddGameObject(GameObject go)
         {
             _gameObjects.Add(go);

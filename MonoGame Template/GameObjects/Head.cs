@@ -12,6 +12,9 @@ namespace Snake.GameObjects
         private Keys direction;
         private Keys queuedTurn = Keys.None;
         private Vector2 position;
+        Vector2 lastRoundedPos;
+        bool turned_this_pos = false;
+
         public Head(Texture2D texture_arg, Vector2 Position)
         {
             AddComponent(new TextureComponent(texture_arg));
@@ -52,17 +55,20 @@ namespace Snake.GameObjects
         {
             direction = GetComponent<DirectionComponent>().Direction;
             position = GetComponent<PositionComponent>().Position;
+            if (GetComponent<PositionComponent>().RoundedPosition != lastRoundedPos) turned_this_pos = false;
+            lastRoundedPos = GetComponent<PositionComponent>().RoundedPosition;
 
             UpdateTexture();
 
             if (queuedTurn == Keys.None) QueueTurn();
-            else TryTurn(queuedTurn);
+            if(!turned_this_pos) TryTurn(queuedTurn);
 
             foreach (var item in _components)
             {
                 item.Update(UpdateTime);
             }
-
+            
+            Globals.sb.Append(queuedTurn.ToString());
 
             if (GetComponent<PositionComponent>().Position.X < 0 || GetComponent<PositionComponent>().Position.X > Globals.Size
                 || GetComponent<PositionComponent>().Position.Y < 0 || GetComponent<PositionComponent>().Position.Y > Globals.Size) Globals.GameRunning = false;
@@ -76,6 +82,7 @@ namespace Snake.GameObjects
 
         private Keys QueueTurn()
         {
+
             if (Globals.keyboard.ReleasedThisFrame(Keys.Left) && direction != Keys.Right)
             {
                 queuedTurn = Keys.Left;
@@ -105,6 +112,7 @@ namespace Snake.GameObjects
                         TurnObject(Keys.Left);
                         GetComponent<PositionComponent>().Position = new Vector2(position.X, 40 * GetComponent<PositionComponent>().RoundedPosition.Y + 20);
                         queuedTurn = Keys.None;
+                        turned_this_pos = true;
                         return true;
                     }
                     break;
@@ -114,6 +122,7 @@ namespace Snake.GameObjects
                         TurnObject(Keys.Right);
                         GetComponent<PositionComponent>().Position = new Vector2(position.X, 40 * GetComponent<PositionComponent>().RoundedPosition.Y + 20);
                         queuedTurn = Keys.None;
+                        turned_this_pos = true;
                         return true;
                     }
                     break;
@@ -123,6 +132,7 @@ namespace Snake.GameObjects
                         TurnObject(Keys.Up);
                         GetComponent<PositionComponent>().Position = new Vector2(40 * GetComponent<PositionComponent>().RoundedPosition.X + 20, position.Y);
                         queuedTurn = Keys.None;
+                        turned_this_pos = true;
                         return true;
                     }
                     break;
@@ -132,6 +142,7 @@ namespace Snake.GameObjects
                         TurnObject(Keys.Down);
                         GetComponent<PositionComponent>().Position = new Vector2(40 * GetComponent<PositionComponent>().RoundedPosition.X + 20, position.Y);
                         queuedTurn = Keys.None;
+                        turned_this_pos = true;
                         return true;
                     }
                     break;

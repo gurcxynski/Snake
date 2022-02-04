@@ -11,6 +11,7 @@ namespace Snake.Core
         protected Vector2 LastVelocity;
         public int _index;
         public Keys turned;
+        public bool beDrawn = true;
         public GameObject AddComponent(Component comp)
         {
             _components.Add(comp);
@@ -33,8 +34,7 @@ namespace Snake.Core
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, new Vector2(GetComponent<PositionComponent>().Position.X - 20, GetComponent<PositionComponent>().Position.Y - 20), Color.White);
-            spriteBatch.DrawString(Globals.font, (GetComponent<PositionComponent>().RoundedPosition.X + "," + GetComponent<PositionComponent>().RoundedPosition.Y), new Vector2(GetComponent<PositionComponent>().Position.X - 10, GetComponent<PositionComponent>().Position.Y - 10), Color.Black);
+            if(beDrawn) spriteBatch.Draw(GetComponent<TextureComponent>()._Texture, new Vector2(GetComponent<PositionComponent>().Position.X - 20, GetComponent<PositionComponent>().Position.Y - 20), Color.White);
         }
 
         public virtual void Pause()
