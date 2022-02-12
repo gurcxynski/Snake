@@ -16,7 +16,7 @@ namespace Snake.Buttons
 
         override public void Update()
         {
-            if (enterButton() && Globals.mouse.ReleasedThisFrame(MouseButtons.Left))
+            if (EnterButton() && Globals.mouse.ReleasedThisFrame(MouseButtons.Left))
             {
                 Settings.godmode = !Settings.godmode;
                 text = "GODMODE: " + (Settings.godmode ? "ENABLED" : "DISABLED");
