@@ -14,12 +14,12 @@ namespace Snake.Core
             if (beDrawn)
             {
                 spriteBatch.Draw(texture, position, Color.White);
-                spriteBatch.DrawString(Globals.font, text, new Vector2(position.X, position.Y + 5), Color.Black);
+                spriteBatch.DrawString(Globals.font, text, new Vector2((position.X + texture.Width / 2) - Globals.font.MeasureString(text).X / 2, position.Y + 5), Color.Black);
             }
         }
-        public bool enterButton()
+        public bool EnterButton()
         {
-            if (Globals.mouse.Position.X < position.X + texture.Width &&
+            if (    Globals.mouse.Position.X < position.X + texture.Width &&
                     Globals.mouse.Position.X > position.X &&
                     Globals.mouse.Position.Y < position.Y + texture.Height &&
                     Globals.mouse.Position.Y > position.Y)

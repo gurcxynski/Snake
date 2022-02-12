@@ -101,6 +101,11 @@ namespace Snake.Core
             {
                 if (item.GetType() == typeof(BodyFragment) && GetObject<Apple>().Check(item))
                     GetObject<Apple>().Randomize(10);
+                if (!Settings.godmode && item.GetType() == typeof(BodyFragment) && GetObject<Head>().Check(item) && item._index != 0)
+                {
+                    Reset();
+                    return;
+                }
             }
             
             Debug.WriteLine(Globals.sb.ToString());

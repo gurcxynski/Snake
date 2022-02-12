@@ -19,10 +19,16 @@ namespace Snake.Buttons
 
         override public void Update()
         {
-            if (enterButton() && Globals.mouse.ReleasedThisFrame(MouseButtons.Left))
+            if (EnterButton() && Globals.mouse.ReleasedThisFrame(MouseButtons.Left))
             {
                 Settings.BaseVel += 20;
                 if (Settings.BaseVel > 300) Settings.BaseVel = 100;
+                text = "SPEED:" + Settings.BaseVel;
+            }
+            else if (EnterButton() && Globals.mouse.ReleasedThisFrame(MouseButtons.Right))
+            {
+                Settings.BaseVel -= 20;
+                if (Settings.BaseVel < 100) Settings.BaseVel = 300;
                 text = "SPEED:" + Settings.BaseVel;
             }
         }
